@@ -24,6 +24,7 @@
     "colors"           : "0.6.x",
     "pretty-data"      : "0.40.0",
     "codo"             : "1.5.4",
-    "node-phantom"     : "0.2.0"
+    "node-phantom"     : "0.2.0",
+    "jsdom"            : "*"
   }
 }

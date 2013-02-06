@@ -10,8 +10,6 @@ class snapshooter.Snapshooter
   colors = require 'colors'
   
   constructor:->
-    console.log "\n"
-
     @root     = path.normalize __dirname + "/.."
 
     @version = (require "#{@root}/package.json" ).version
@@ -39,8 +37,5 @@ class snapshooter.Snapshooter
     options[1]     = options[1] || 'static'
 
     @target_folder = path.resolve options[1]
-
-    console.log '@root : ', @root
-    console.log '@target_folder : ', @target_folder
 
     new snapshooter.Shoot @, options

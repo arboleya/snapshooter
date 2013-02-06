@@ -1,6 +1,7 @@
 class snapshooter.Crawler
 
   phantom = require "node-phantom"
+  jsdom   = require( "jsdom" )
 
   page: null
 
@@ -37,6 +38,14 @@ class snapshooter.Crawler
         return done null
 
       if data.rendered
+
+        # jqueryfying source with jsdom
+        # window = jsdom.jsdom( data.source ).createWindow()
+
+        # jsdom.jQueryify window, "http://code.jquery.com/jquery.js", ->
+        # parsing links easily with jquery
+        #   window.$( 'a' ).each ( i, item ) ->
+        #     console.log window.$( item ).attr 'href'
 
         return done data.source
 

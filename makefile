@@ -2,7 +2,7 @@
 
 COFFEE=node_modules/coffee-script/bin/coffee
 TOASTER=node_modules/coffee-toaster/bin/toaster
-
+VERSION=`$(COFFEE) build/bumper.coffee --version`
 
 bump.minor:
 	$(COFFEE) build/bumper.coffee --minor

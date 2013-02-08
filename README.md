@@ -44,10 +44,10 @@ Considering you have a **Single Page Application** I bet you have also some
 `render` method, and possibly another `in` and `out` too for handling transitions.
 
 Well, the only matter here is to inform **Snapshooter** that the page has finish
-rendering. It's achieved by setting the property `window.ready_for_crawling`.
+rendering. It's achieved by setting the property `window.crawler.is_rendered`.
 
 ````javascript
-window.ready_for_crawling = true
+window.crawler.is_rendered = true
 ````
 
 Snapshooter will keep waiting for the page until this variable gets `true` and

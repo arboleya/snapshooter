@@ -26,7 +26,7 @@ module.exports = class Crawler
 
     @page.evaluate ( -> 
       data =
-        rendered: window.crawler.is_rendered
+        rendered: window.ready_for_crawling
         source  : document.all[0].outerHTML
     ), ( error, data ) =>
 

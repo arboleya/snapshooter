@@ -1,7 +1,8 @@
 {
   "name": "snapshoter",
   "version": "0.1.0",
-  "author": "Anderson Arboleya <anderson@arboleya.me> and Henrique Matias <hems.inlet+npm@gmail.com>",
+  "author": "Henrique Matias <hems.inlet+npm@gmail.com>",
+  "contributors": ["Anderson Arboleya <anderson@arboleya.me>"],
   "description": "Recusively loads javascript pages and render then to plain html files",
   "keywords": ["crawler", "html", "javascript", "ajax", "render"],
 

@@ -1,16 +1,17 @@
 .PHONY: build docs
 
+COFFEE=node_modules/coffee-script/bin/coffee
 TOASTER=node_modules/coffee-toaster/bin/toaster
 
 
 bump.minor:
-	coffee build/bumper.coffee --minor
+	$(COFFEE) build/bumper.coffee --minor
 
 bump.major:
-	coffee build/bumper.coffee --major
+	$(COFFEE) build/bumper.coffee --major
 
 bump.patch:
-	coffee build/bumper.coffee --patch
+	$(COFFEE) build/bumper.coffee --patch
 
 
 publish:

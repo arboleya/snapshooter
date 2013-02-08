@@ -1,7 +1,7 @@
-class snapshooter.Crawler
+phantom = require "node-phantom"
+jsdom   = require "jsdom"
 
-  phantom = require "node-phantom"
-  jsdom   = require( "jsdom" )
+module.exports = class Crawler
 
   page: null
 
@@ -11,7 +11,6 @@ class snapshooter.Crawler
 
     @ph   = null
     @page = null
-
 
     phantom.create (error, @ph) =>
       @ph.createPage (error, @page) =>

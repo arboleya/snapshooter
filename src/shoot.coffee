@@ -1,15 +1,15 @@
-#<< snapshooter/crawler
+fs   = require "fs"
+exec = (require "child_process").exec
+path = require "path"
+fsu  = require "fs-util"
+
+Crawler = require './crawler'
 
 ###
   Scans a initial address for links, then recursively loads all the
   urls waits it js to render and then write it to a file
 ###
-class snapshooter.Shoot
-
-  fs   = require "fs"
-  exec = (require "child_process").exec
-  path = require "path"
-  fsu  = require "fs-util"
+module.exports = class Shoot
 
   #
   # key -> value ( address -> is_crawled)
@@ -59,7 +59,7 @@ class snapshooter.Shoot
 
   get:( url )->
 
-    crawler = new snapshooter.Crawler()
+    crawler = new Crawler()
 
     @connections++
 
@@ -108,6 +108,8 @@ class snapshooter.Shoot
     @done() unless @connections > 0
       
 
+
+
   ###
   Parse Source code for giving URL indexing links to be cralwed 
 
@@ -144,19 +146,21 @@ class snapshooter.Shoot
 
 
   save_page:( url, src )->
+    reg = /(?:https?:\/\/)(?:[\w]+)(?:\:)?(?:[0-9]+)(?:\/|$)(.*)/m
+    filename = (reg.exec url)[1]
 
-    route = (/(http:\/\/)([\w]+)(:)?([0-9]+)?\/(.*)/g.exec url)[5]
+    console.log filename
 
-    folder = path.normalize "#{@the.target_folder}/#{route}"
+    folder = path.normalize "#{@the.target_folder}/#{filename}"
     fsu.mkdir_p folder unless fs.existsSync( folder )
 
     src = ((require 'pretty-data').pd.xml src) + "\n"
 
     file = path.normalize "#{folder}/index.html"
     fs.writeFileSync file, src
-    route = (route || "/").bold.yellow
+    filename = (filename or "/").bold.yellow
 
-    console.log " ! rendered - #{route.bold.yellow} -> #{folder}"
+    console.log " ! rendered - #{filename.bold.yellow} -> #{folder}"
 
   #
   # Simply check if a file was already rendered for this address

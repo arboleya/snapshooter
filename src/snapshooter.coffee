@@ -1,13 +1,10 @@
-#<< snapshooter/shoot
+fs     = require "fs"
+path   = require "path"
+colors = require 'colors'
 
-exports.run = ->
-  new snapshooter.Snapshooter
+Shoot = require './shoot'
 
-class snapshooter.Snapshooter
-
-  fs     = require "fs"
-  path   = require "path"
-  colors = require 'colors'
+module.exports = class Snapshooter
   
   constructor:->
     @root     = path.normalize __dirname + "/.."
@@ -17,7 +14,7 @@ class snapshooter.Snapshooter
     @usage = "#{'Snapshooter'.bold} " + "v#{@version}\n".grey
 
     @usage += "#{'Usage:'.bold}\n"
-    @usage += "  snapshoot #{'url'.red} #{'render_path'.yellow}    \n\n"
+    @usage += "  snapshooter #{'url'.red} #{'render_path'.yellow}    \n\n"
 
     @usage += "#{'Options:'.bold}\n"
     @usage += "            #{'help'.red}   Show this help screen.\n"
@@ -31,11 +28,10 @@ class snapshooter.Snapshooter
 
     if not options.length or options[0] == 'help'
       console.log @usage
-
       return
 
     options[1]     = options[1] || 'static'
 
     @target_folder = path.resolve options[1]
 
-    new snapshooter.Shoot @, options
+    new Shoot @, options

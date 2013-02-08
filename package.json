@@ -1,11 +1,10 @@
 {
-  "name": "theoricus",
+  "name": "snapshoter",
   "version": "0.1.0",
   "author": "Anderson Arboleya <anderson@arboleya.me> and Henrique Matias <hems.inlet+npm@gmail.com>",
   "description": "Recusively loads javascript pages and render then to plain html files",
-  "keywords": ["crawl", "javascript", "loader", "render", "html"],
+  "keywords": ["crawler", "html", "javascript", "ajax", "render"],
 
-  "main": "./lib/snapshoot",
   "directories": {"lib": "./lib/"},
   "scripts": {"test": "make test"},
 
@@ -14,17 +13,18 @@
     "url": "http://github.com/serpentem/snapshoot"
   },
 
-  "bin": {"snapshoot": "./bin/snapshoot"},
+  "bin": {
+    "snapshooter": "./bin/snapshooter",
+    "_snapped_coffee": "./node_modules/coffee-script/bin/coffee"
+  },
   "engines": {"node" : "0.8.x"},
   
   "dependencies"   : {
     "fs-util"          : "0.3.4",
-    "coffee-toaster"   : "0.6.11",
     "coffee-script"    : "1.4.0",
     "colors"           : "0.6.x",
-    "pretty-data"      : "0.40.0",
-    "codo"             : "1.5.4",
     "node-phantom"     : "0.2.0",
-    "jsdom"            : "*"
+    "pretty-data"      : "0.40.0",
+    "jsdom"            : "0.4.1"
   }
 }

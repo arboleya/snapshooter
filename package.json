@@ -11,7 +11,7 @@
 
   "repository": {
     "type": "git",
-    "url": "http://github.com/serpentem/snapshoot"
+    "url": "http://github.com/serpentem/snapshooter"
   },
 
   "bin": {

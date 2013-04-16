@@ -12,12 +12,12 @@ Crawler = require './crawler'
 module.exports = class Shoot
 
   #
-  # key -> value ( address -> is_crawled)
+  # key -> value ( address -> is_crawled )
   #
   pages: {}
 
   #
-  # the initial address to be crawled
+  # root address to be crawled
   #
   url: null
 
@@ -41,19 +41,13 @@ module.exports = class Shoot
     @url = options[0]
 
     exec "phantomjs -v", (error, stdout, stderr)=>
-
       if /phantomjs: command not found/.test stderr
-
         console.log "Error ".bold.red + "Install #{'phantomjs'.yellow}"+
               " before indexing pages."+
               "\n\thttp://phantomjs.org/"
-
       else
-
         console.log " - initializing..."
-
         console.log " #{'>'.yellow} " + @url.grey
-        
         @get @url
 
 
@@ -65,17 +59,17 @@ module.exports = class Shoot
 
     @crawlers.push crawler
 
-    @pages[url] = true
+    @pages[url] = is_crawled: true
 
-    crawler.get_url url, ( src ) => 
+    crawler.get_url url, ( src, links ) => 
 
-      @after_render( url, src )
+      @after_render( url, src, links )
 
       crawler.exit()
 
       crawler = null
 
-  after_render:(url, src)->
+  after_render:(url, src, links)->
 
     #
     # IF source is null
@@ -85,7 +79,7 @@ module.exports = class Shoot
     #
     if src
 
-      @parse_links url, src
+      @index_links url, links
 
       @save_page url, src
 
@@ -97,59 +91,62 @@ module.exports = class Shoot
 
     # crawl next pages
     for url, crawled of @pages
-
-      continue if @pages[url]
+      continue if @pages[url].is_crawled
 
       @get url
 
-      if @connections == @max_connections
-        break
+      break if @connections == @max_connections
 
+    # finishs the script after rendering all pages
     @done() unless @connections > 0
       
 
 
 
   ###
-  Parse Source code for giving URL indexing links to be cralwed 
-
   @param url: String 
-  @param src: String
+  @param links: all links mapped using $( 'a' ).attr( 'href') as filter
   ###
-  parse_links:( url, src )->
+  index_links:( url, links )->
 
-    domain = url.match /(http:\/\/[\w]+:?[0-9]*)/g
-    reg    = /a\shref=(\"|\')(\/)?([^\'\"]+)/g
+    domain = url.match /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i
+    domain = domain[0]
 
-    console.log " - scanning links - #{url}"
+    # filthy workaround
+    if domain.substr(-1) == '/'
+      len = domain.length
+      len--
+      domain = domain.substr 0, len
 
-    while (matched = (reg.exec src))?
+    for index, link of links
 
       # skip if its external link
-      continue if /^http/m.test matched[3]
+      continue if /^http/m.test link
 
-      url = "#{domain}/#{matched[3]}"
+      continue if link == '#'
+
+      url = domain + link
 
       # skip if it was already crawled
-      continue if @pages[url]
+      continue if @pages[url].is_crawled
 
       continue if url.indexOf( @url ) != 0
 
-      # skip if was already rendered
-      # if @has_rendered( url )
-      #   console.log " - skipping, already saved - #{url}"
-      #   continue
-
       console.log " #{'+'.green} " + (url.replace( @url, '' ) ).grey
 
-      @pages[url] = false
+      # prepare url to be crawled
+      @pages[url] = is_crawled: false
 
 
   save_page:( url, src )->
-    reg = /(?:https?:\/\/)(?:[\w]+)(?:\:)?(?:[0-9]+)(?:\/|$)(.*)/m
-    filename = (reg.exec url)[1]
 
-    console.log filename
+    console.log 'url is', url
+
+    reg = url.match /(?:https?:\/\/)(?:[\w]+)(?:\:)?(?:[0-9]+)(?:\/|$)(.*)/m
+
+    return
+
+    filename = (reg.exec url)[1]
 
     folder = path.normalize "#{@the.target_folder}/#{filename}"
     fsu.mkdir_p folder unless fs.existsSync( folder )
@@ -161,16 +158,6 @@ module.exports = class Shoot
     filename = (filename or "/").bold.yellow
 
     console.log " ! rendered - #{filename.bold.yellow} -> #{folder}"
-
-  #
-  # Simply check if a file was already rendered for this address
-  # skip if so.
-  #
-  has_rendered:( url )->
-    route  = (/(http:\/\/)([\w]+)(:)?([0-9]+)?\/(.*)/g.exec url)[5]
-    folder = path.normalize "#{@the.target_folder}#{route}"
-
-    return fs.existsSync( folder )
 
   done: ->
 

@@ -28,25 +28,31 @@ module.exports = class Crawler
       data =
         rendered: window.crawler.is_rendered
         source  : document.all[0].outerHTML
+        links   : window.$.map( $( 'a' ), ( item )-> $( item ).attr 'href' )
     ), ( error, data ) =>
 
-      # sometimes data is null, perhaps when the page is 404
-      # but to be honest, not sure when
+      # sometimes data is null, perhaps when the page is 404 or the DOM 
+      # is invalid, but to be honest, not sure when
       if data is null
+
+        console.error 'got null data'
 
         return done null
 
       if data.rendered
 
+        # unfortunately there's some problem using jsdom.jQueryify,
+        # problem due to invalid XHTML or such problems
+        # 
         # jqueryfying source with jsdom
         # window = jsdom.jsdom( data.source ).createWindow()
 
         # jsdom.jQueryify window, "http://code.jquery.com/jquery.js", ->
         # parsing links easily with jquery
-        #   window.$( 'a' ).each ( i, item ) ->
-        #     console.log window.$( item ).attr 'href'
+          # window.$( 'a' ).each ( i, item ) ->
+            # console.log window.$( item ).attr 'href'
 
-        return done data.source
+        return done data.source, data.links
 
       setTimeout (=> @keep_on_checking url, done), 10
 

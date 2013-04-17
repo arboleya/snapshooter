@@ -25,7 +25,6 @@
     "coffee-script"    : "1.4.0",
     "colors"           : "0.6.x",
     "node-phantom"     : "0.2.0",
-    "pretty-data"      : "0.40.0",
-    "jsdom"            : "0.4.1"
+    "pretty-data"      : "0.40.0"
   }
 }

@@ -45,17 +45,6 @@ module.exports = class Crawler
 
       if data.rendered
 
-        # unfortunately there's some problem using jsdom.jQueryify,
-        # problem due to invalid XHTML or such problems
-        # 
-        # jqueryfying source with jsdom
-        # window = jsdom.jsdom( data.source ).createWindow()
-
-        # jsdom.jQueryify window, "http://code.jquery.com/jquery.js", ->
-        # parsing links easily with jquery
-          # window.$( 'a' ).each ( i, item ) ->
-            # console.log window.$( item ).attr 'href'
-
         return done data.source, data.links
 
       setTimeout (=> @keep_on_checking url, done), 10

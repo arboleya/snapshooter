@@ -61,5 +61,6 @@ module.exports = class Crawler
       setTimeout (=> @keep_on_checking url, done), 10
 
   exit: ->
-    @page.close()
+    # how to close a page?
+    # @page.close()
     @ph.exit()

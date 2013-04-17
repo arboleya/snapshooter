@@ -26,7 +26,7 @@ module.exports = class Shoot
   # current number connections
   connections: 0
 
-  we_will_need_phantom: () ->
+  will_need_phantom: () ->
     exec "phantomjs -v", (error, stdout, stderr) =>
       if /phantomjs: command not found/.test stderr
         console.log "Error ".bold.red + "Install #{'phantomjs'.yellow}"+
@@ -37,7 +37,7 @@ module.exports = class Shoot
 
   constructor: ( @the, @options ) ->
 
-    @we_will_need_phantom()
+    this.will_need_phantom()
 
     @root_url = options[0]
 

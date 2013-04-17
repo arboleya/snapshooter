@@ -11,65 +11,60 @@ Crawler = require './crawler'
 ###
 module.exports = class Shoot
 
-  #
-  # key -> value ( address -> is_crawled )
-  #
+  # Dictionary ( url -> crawled [ on | off ] )
   pages: {}
 
-  #
   # root address to be crawled
-  #
-  url: null
+  root_url: null
 
-  #
   # max number of connections
-  #
   max_connections: 10
 
-  #
-  # current connections
-  #
+  # current number connections
   connections: 0
 
-  #
-  #
-  #
-  crawlers: []
-
-  constructor:( @the, @options )->
-
-    @url = options[0]
-
-    exec "phantomjs -v", (error, stdout, stderr)=>
+  we_will_need_phantom: () ->
+    exec "phantomjs -v", (error, stdout, stderr) =>
       if /phantomjs: command not found/.test stderr
         console.log "Error ".bold.red + "Install #{'phantomjs'.yellow}"+
               " before indexing pages."+
               "\n\thttp://phantomjs.org/"
-      else
-        console.log " - initializing..."
-        console.log " #{'>'.yellow} " + @url.grey
-        @get @url
+
+        process.exit code = process.ENOENT
+
+  constructor: ( @the, @options ) ->
+
+    @we_will_need_phantom()
+
+    @root_url = options[0]
+
+    console.log " - initializing..."
+    console.log " #{'>'.yellow} " + @root_url.grey
+
+    @crawl @root_url
 
 
-  get:( url )->
 
-    crawler = new Crawler()
+  # API
+
+
+  crawl: ( url ) ->
 
     @connections++
 
-    @crawlers.push crawler
+    @mark_as_crawled url
 
-    @pages[url] = is_crawled: true
+    crawler = new Crawler()
 
-    crawler.get_url url, ( src, links ) => 
+    crawler.get_url url, ( source, links ) => 
 
-      @after_render( url, src, links )
+      @after_parse url, source, links
 
       crawler.exit()
 
       crawler = null
 
-  after_render:(url, src, links)->
+  after_parse: ( url, source, links ) ->
 
     #
     # IF source is null
@@ -77,11 +72,11 @@ module.exports = class Shoot
     # ELSE
     #   - get links and save pages
     #
-    if src
+    if source
 
       @index_links url, links
 
-      @save_page url, src
+      @save_page url, source
 
     else
 
@@ -89,16 +84,18 @@ module.exports = class Shoot
 
     @connections--
 
+    #
     # crawl next pages
+    # 
     for url, crawled of @pages
-      continue if @pages[url].is_crawled
+      continue if already_crawled url
 
-      @get url
+      @crawl url
 
-      break if @connections == @max_connections
+      break if reached_connection_limit()
 
     # finishs the script after rendering all pages
-    @done() unless @connections > 0
+    @done() unless still_has_connections()
       
 
 
@@ -120,27 +117,25 @@ module.exports = class Shoot
 
     for index, link of links
 
-      # skip if its external link
-      continue if /^http/m.test link
-
       continue if link == '#'
 
       url = domain + link
 
       # skip if it was already crawled
-      continue if @pages[url].is_crawled
+      continue if already_crawled url
 
-      continue if url.indexOf( @url ) != 0
+      continue if is_external_link url
 
-      console.log " #{'+'.green} " + (url.replace( @url, '' ) ).grey
+      console.log " #{'+'.green} " + (url.replace( @root_url, '' ) ).grey
 
       # prepare url to be crawled
-      @pages[url] = is_crawled: false
+      add_to_index url
 
 
   save_page:( url, src )->
 
     console.log 'url is', url
+    console.log '@root_url is', @root_url
 
     reg = url.match /(?:https?:\/\/)(?:[\w]+)(?:\:)?(?:[0-9]+)(?:\/|$)(.*)/m
 
@@ -162,3 +157,19 @@ module.exports = class Shoot
   done: ->
 
       console.log " OK - indexed successfully.".bold.green
+
+      process.exit code = 0
+
+
+  add_to_index   : ( url ) -> @pages[url] = is_crawled: false
+
+  mark_as_crawled: ( url ) -> @pages[url] = crawled: on
+
+  already_crawled: ( url ) -> @pages[url]?.crawled is
+
+  # check if url contains "root" url
+  is_external_link: ( url ) -> url.indexOf( @root_url ) != 0
+
+  reached_connection_limit: -> @connections == @max_connections
+
+  still_has_connections:    -> @connections > 0

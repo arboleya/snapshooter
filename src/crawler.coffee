@@ -1,24 +1,28 @@
 phantom = require "node-phantom"
 jsdom   = require "jsdom"
 
+###
+  Create and instance of phantom
+###
 module.exports = class Crawler
 
+  ph: null
   page: null
 
   get_url:( url, done )->
 
     @ph.exit() if @ph?
 
-    @ph   = null
-    @page = null
+    @ph   = null # save instance in order to .exit() later
+    @page = null # save page for closing later
 
-    phantom.create (error, @ph) =>
-      @ph.createPage (error, @page) =>
-        @page.open url, (err, status )=>
+    phantom.create ( error, @ph ) =>
+      @ph.createPage ( error, @page ) =>
+        @page.open url, ( err, status )=>
 
-          if status is not 'ok'
+          console.log " ? skipping, source is empty or null or some problem occured #{url}"
 
-            return done( null )
+          return done( null ) if status is not 'ok'
 
           @keep_on_checking url, done
 
@@ -32,7 +36,7 @@ module.exports = class Crawler
     ), ( error, data ) =>
 
       # sometimes data is null, perhaps when the page is 404 or the DOM 
-      # is invalid, but to be honest, not sure when
+      # is invalid, or its a jpeg or zip or whatever
       if data is null
 
         console.error 'got null data'
@@ -57,4 +61,5 @@ module.exports = class Crawler
       setTimeout (=> @keep_on_checking url, done), 10
 
   exit: ->
+    @page.close()
     @ph.exit()

@@ -6,8 +6,11 @@ fsu  = require "fs-util"
 Crawler = require './crawler'
 
 ###
-  Scans a initial address for links, then recursively loads all the
-  urls waits it js to render and then write it to a file
+  Instantiate a crawler for the first url,
+  Crawler returns a source and "<a href=''>" links url
+
+  The links url are filtered ( i.e. external links are not crawled ),
+  and then written to disk
 ###
 module.exports = class Shoot
 
@@ -76,11 +79,10 @@ module.exports = class Shoot
 
       @index_links url, links
 
-      @save_page url, source
+      filename = url.replace @root_url, ''
 
-    else
+      @save_page filename, source
 
-      console.log " ? skipping, source is empty or null or some problem occured #{url}"
 
     @connections--
 
@@ -88,14 +90,14 @@ module.exports = class Shoot
     # crawl next pages
     # 
     for url, crawled of @pages
-      continue if already_crawled url
+      continue if @already_crawled url
 
       @crawl url
 
-      break if reached_connection_limit()
+      break if @reached_connection_limit()
 
     # finishs the script after rendering all pages
-    @done() unless still_has_connections()
+    @done() unless @still_has_connections()
       
 
 
@@ -104,7 +106,7 @@ module.exports = class Shoot
   @param url: String 
   @param links: all links mapped using $( 'a' ).attr( 'href') as filter
   ###
-  index_links:( url, links )->
+  index_links:( url, links ) =>
 
     domain = url.match /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i
     domain = domain[0]
@@ -115,6 +117,9 @@ module.exports = class Shoot
       len--
       domain = domain.substr 0, len
 
+    if domain.substr(0) == '/'
+      domain = domain.substr(1)
+
     for index, link of links
 
       continue if link == '#'
@@ -122,38 +127,44 @@ module.exports = class Shoot
       url = domain + link
 
       # skip if it was already crawled
-      continue if already_crawled url
+      continue if @already_crawled url
 
-      continue if is_external_link url
+      continue if @is_external_link url
 
       console.log " #{'+'.green} " + (url.replace( @root_url, '' ) ).grey
 
       # prepare url to be crawled
-      add_to_index url
+      @add_to_index url
 
 
-  save_page:( url, src )->
+  ###
+  TODO: expose with "live coffee config file"
+  ###
+  save_page:( filename, src )->
 
-    console.log 'url is', url
-    console.log '@root_url is', @root_url
+    # console.log 'url is', url
+    # console.log '@root_url is', @root_url
+    # console.log 'filename is', filename
 
-    reg = url.match /(?:https?:\/\/)(?:[\w]+)(?:\:)?(?:[0-9]+)(?:\/|$)(.*)/m
-
-    return
-
-    filename = (reg.exec url)[1]
-
+    # create folder if needed
     folder = path.normalize "#{@the.target_folder}/#{filename}"
     fsu.mkdir_p folder unless fs.existsSync( folder )
 
+    # prettify source
     src = ((require 'pretty-data').pd.xml src) + "\n"
 
+    # write file to disk
     file = path.normalize "#{folder}/index.html"
     fs.writeFileSync file, src
+
+
     filename = (filename or "/").bold.yellow
 
     console.log " ! rendered - #{filename.bold.yellow} -> #{folder}"
 
+  ###
+  TODO: expose with "live coffee config file"
+  ###
   done: ->
 
       console.log " OK - indexed successfully.".bold.green
@@ -165,7 +176,7 @@ module.exports = class Shoot
 
   mark_as_crawled: ( url ) -> @pages[url] = crawled: on
 
-  already_crawled: ( url ) -> @pages[url]?.crawled is
+  already_crawled: ( url ) -> @pages[url]?.crawled is on
 
   # check if url contains "root" url
   is_external_link: ( url ) -> url.indexOf( @root_url ) != 0

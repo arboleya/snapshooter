@@ -1,7 +1,8 @@
-fs   = require "fs"
-exec = (require "child_process").exec
-path = require "path"
-fsu  = require "fs-util"
+fs   = require 'fs'
+exec = (require 'child_process').exec
+path = require 'path'
+fsu  = require 'fs-util'
+connect  = require 'connect'
 
 Crawler = require './crawler'
 
@@ -14,173 +15,101 @@ Crawler = require './crawler'
 ###
 module.exports = class Shoot
 
-  # Dictionary ( url -> crawled [ on | off ] )
-  pages: {}
+  # Dictionary (url -> true|false)
+  crawled: {}
 
   # root address to be crawled
   root_url: null
 
-  # max number of connections
-  max_connections: 10
+  # array of pending_urls urls to crawl
+  pending_urls: null
 
   # current number connections
   connections: 0
 
-  will_need_phantom: () ->
-    exec "phantomjs -v", (error, stdout, stderr) =>
-      if /phantomjs: command not found/.test stderr
-        console.log "Error ".bold.red + "Install #{'phantomjs'.yellow}"+
-              " before indexing pages."+
-              "\n\thttp://phantomjs.org/"
+  # max number of connections
+  max_connections: 10
 
-        process.exit code = process.ENOENT
 
-  constructor: ( @the, @options ) ->
+  constructor:( @the, @cli )->
+    @pending_urls = []
 
-    this.will_need_phantom()
+    # checks if address has http protocol defined, and if not define it
+    if @cli.argv.address
+      unless ~@cli.argv.address.indexOf 'http'
+        @cli.argv.address = 'http://' + @cli.argv.address
 
-    @root_url = options[0]
-
-    console.log " - initializing..."
-    console.log " #{'>'.yellow} " + @root_url.grey
-
+    @root_url = @cli.argv.address or @cli.argv.file
     @crawl @root_url
 
 
+  # crawl the given url and recursively crawl all the links found within
+  crawl:( url )->
+    return if @crawled[url] is true
+    @crawled[url] = false
 
-  # API
-
-
-  crawl: ( url ) ->
-
+    console.log '>'.bold.yellow, url.grey 
     @connections++
-
-    @mark_as_crawled url
-
-    crawler = new Crawler()
-
-    crawler.get_url url, ( source, links ) => 
-
-      @after_parse url, source, links
-
-      crawler.exit()
-
-      crawler = null
-
-  after_parse: ( url, source, links ) ->
-
-    #
-    # IF source is null
-    #   - mark crawled and continue 
-    # ELSE
-    #   - get links and save pages
-    #
-    if source
-
-      @index_links url, links
-
-      filename = url.replace @root_url, ''
-
-      @save_page filename, source
+    new Crawler @cli, url, ( source )=> 
+      console.log '< '.bold.cyan, url.grey
+      @connections--
+      @crawled[url] = true
+      @save_page url, source
+      @after_crawl source
 
 
-    @connections--
+  # parses all links in the given source, and crawl them
+  after_crawl:( source )->
+    reg = /a href="(.+)"/g
+    links = []
 
-    #
-    # crawl next pages
-    # 
-    for url, crawled of @pages
-      continue if @already_crawled url
+    # filters all links
+    if source?
+      while (match = reg.exec source)?
+        relative = match[1]
+        absolute = @root_url + relative
+        if relative isnt '/' and not @crawled[absolute]?
+          @pending_urls.push absolute
 
-      @crawl url
+    # starting cralwing them until max_connections is reached
+    while @connections < @max_connections and @pending_urls.length
+      @crawl do @pending_urls.shift
 
-      break if @reached_connection_limit()
-
-    # finishs the script after rendering all pages
-    @done() unless @still_has_connections()
-      
-
-
-
-  ###
-  @param url: String 
-  @param links: all links mapped using $( 'a' ).attr( 'href') as filter
-  ###
-  index_links:( url, links ) =>
-
-    domain = url.match /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i
-    domain = domain[0]
-
-    # filthy workaround
-    if domain.substr(-1) == '/'
-      len = domain.length
-      len--
-      domain = domain.substr 0, len
-
-    if domain.substr(0) == '/'
-      domain = domain.substr(1)
-
-    for index, link of links
-
-      continue if link == '#'
-
-      url = domain + link
-
-      # skip if it was already crawled
-      continue if @already_crawled url
-
-      continue if @is_external_link url
-
-      console.log " #{'+'.green} " + (url.replace( @root_url, '' ) ).grey
-
-      # prepare url to be crawled
-      @add_to_index url
+    if @connections is 0
+      do @finish
 
 
-  ###
-  TODO: expose with "live coffee config file"
-  ###
-  save_page:( filename, src )->
+  # translates the url into a local address on the file system and saves
+  # the page source
+  save_page:( url, source )->
+    # computes relative url
+    relative_url = (url.replace @root_url, '') or '/'
 
-    # console.log 'url is', url
-    # console.log '@root_url is', @root_url
-    # console.log 'filename is', filename
+    # computes output folder and file
+    output_folder = path.join @cli.argv.output, relative_url
+    output_file = path.join output_folder, 'index.html'
 
     # create folder if needed
-    folder = path.normalize "#{@the.target_folder}/#{filename}"
-    fsu.mkdir_p folder unless fs.existsSync( folder )
-
-    # prettify source
-    src = ((require 'pretty-data').pd.xml src) + "\n"
-
-    # write file to disk
-    file = path.normalize "#{folder}/index.html"
-    fs.writeFileSync file, src
+    unless fs.existsSync output_folder
+      fsu.mkdir_p output_folder
+    
+    # write file to disk and show status msg
+    fs.writeFileSync output_file, source
+    console.log '✓ '.green, relative_url
 
 
-    filename = (filename or "/").bold.yellow
+  finish:->
+    # success status msg
+    console.log '\n★  Application crawled successfully!'.green
 
-    console.log " ! rendered - #{filename.bold.yellow} -> #{folder}"
+    # aborts if webserver isn't needed
+    return unless @cli.argv.server
 
-  ###
-  TODO: expose with "live coffee config file"
-  ###
-  done: ->
+    # simple static server with 'connect'
+    @conn = connect()
+    .use( connect.static @cli.argv.output )
+    .listen @cli.argv.port
 
-      console.log " OK - indexed successfully.".bold.green
-
-      process.exit code = 0
-
-
-  add_to_index   : ( url ) -> @pages[url] = is_crawled: false
-
-  mark_as_crawled: ( url ) -> @pages[url] = crawled: on
-
-  already_crawled: ( url ) -> @pages[url]?.crawled is on
-
-  # check if url contains "root" url
-  is_external_link: ( url ) -> url.indexOf( @root_url ) != 0
-
-  reached_connection_limit: -> @connections == @max_connections
-
-  still_has_connections:    -> @connections > 0
+    # webserver start msg
+    address = 'http://localhost:' + @cli.argv.port
+    console.log '\nPreview server started at: \n\t'.grey, address

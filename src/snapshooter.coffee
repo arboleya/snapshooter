@@ -1,37 +1,19 @@
-fs     = require "fs"
-path   = require "path"
+require('source-map-support').install()
+
+fs = require 'fs'
+path = require 'path'
 colors = require 'colors'
 
-Shoot = require './shoot'
+Shoot = require './core/shoot'
+Cli = require './cli'
 
 module.exports = class Snapshooter
   
   constructor:->
-    @root     = path.normalize __dirname + "/.."
+    @version = (require './../package.json' ).version
+    @cli = new Cli @version
 
-    @version = (require "#{@root}/package.json" ).version
-
-    @usage = "#{'Snapshooter'.bold} " + "v#{@version}\n".grey
-
-    @usage += "#{'Usage:'.bold}\n"
-    @usage += "  snapshooter #{'url'.red} #{'render_path'.yellow}    \n\n"
-
-    @usage += "#{'Options:'.bold}\n"
-    @usage += "            #{'help'.red}   Show this help screen.\n"
-
-    # grab options starting from index 2
-    options = process.argv.slice 2
-
-    # defaults to help command in case user doesn't pass any parameter
-    if not options.length
-      console.log "ERROR".bold.red + " You should provide an http url to be shooted.\n\n"
-
-    if not options.length or options[0] == 'help'
-      console.log @usage
-      return
-
-    options[1]     = options[1] || 'static'
-
-    @target_folder = path.resolve options[1]
-
-    new Shoot @, options
+    if @cli.argv.address or @cli.argv.file
+      return new Shoot @, @cli
+    
+    console.log @cli.opts.help() + @cli.examples

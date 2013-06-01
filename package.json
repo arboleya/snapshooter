@@ -3,10 +3,11 @@
   "version": "0.2.0",
   "author": "Henrique Matias <hems.inlet+npm@gmail.com>",
   "contributors": ["Anderson Arboleya <anderson@arboleya.me>"],
-  "description": "Recusively loads javascript pages and render then to plain html files",
+  "description": "Sinmple crawler for Single Single Applications.",
   "keywords": ["crawler", "html", "javascript", "ajax", "render"],
 
   "directories": {"lib": "./lib/"},
+
   "scripts": {"test": "make test"},
 
   "repository": {
@@ -15,16 +16,24 @@
   },
 
   "bin": {
-    "snapshooter": "./bin/snapshooter",
-    "_snapped_coffee": "./node_modules/coffee-script/bin/coffee"
+    "snapshooter": "./bin/snapshooter"
   },
-  "engines": {"node" : "0.8.x"},
-  
+
+  "engines": {
+    "node" : ">= 0.10"
+  },
+
   "dependencies"   : {
-    "fs-util"          : "0.3.4",
-    "coffee-script"    : "1.4.0",
-    "colors"           : "0.6.x",
-    "node-phantom"     : "0.2.0",
-    "pretty-data"      : "0.40.0"
+    "colors": "0.6.x",
+    "connect": "2.7.x",
+    "fs-util": "0.3.x",
+    "phantom": "0.5.x",
+    "optimist": "0.5.x",
+    "pretty-data": "0.40.x",
+    "source-map-support": "0.1.x"
+  },
+
+  "devDependencies": {
+    "coffee-script": "1.6.x"
   }
 }

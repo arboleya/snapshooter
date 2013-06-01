@@ -1,5 +1,5 @@
-phantom = require "node-phantom"
-jsdom   = require "jsdom"
+phantom = require 'phantom'
+pd = (require 'pretty-data').pd
 
 ###
   Create and instance of phantom
@@ -9,47 +9,51 @@ module.exports = class Crawler
   ph: null
   page: null
 
-  get_url:( url, done )->
+  port = 12345
 
-    @ph.exit() if @ph?
+  constructor:( @cli, @url, @done )->
 
-    @ph   = null # save instance in order to .exit() later
-    @page = null # save page for closing later
+    # creates a new phantom and page instance
+    phantom.create ( @ph, err1 )=>
+      console.error 'err1', err1 if err1?
 
-    phantom.create ( error, @ph ) =>
-      @ph.createPage ( error, @page ) =>
-        @page.open url, ( err, status )=>
+      @ph.createPage ( @page, err2 )=>
+        console.error 'err1', err2 if err2?
 
-          console.log " ? skipping, source is empty or null or some problem occured #{url}"
+        # open the given url
+        @page.open @url, ( status )=>
+            
+          # validates http status and rises an error if somethings is wrong
+          if status isnt 'success'
+            console.error @url, 'ended with status = ' + status
 
-          return done( null ) if status is not 'ok'
+          # start checking page until it's rendered
+          do @keep_on_checking
 
-          @keep_on_checking url, done
+    , 'phantomjs'
+    , port++
 
-  keep_on_checking:( url, done )->
 
-    @page.evaluate ( -> 
+  keep_on_checking:=>
+
+    # tries to evaluate page
+    @page.evaluate -> 
       data =
-        rendered: window.crawler.is_rendered
+        rendered: window.crawler and window.crawler.is_rendered
         source  : document.all[0].outerHTML
-        links   : window.$.map( $( 'a' ), ( item )-> $( item ).attr 'href' )
-    ), ( error, data ) =>
+    , ( data, error )=>
 
-      # sometimes data is null, perhaps when the page is 404 or the DOM 
-      # is invalid, or its a jpeg or zip or whatever
-      if data is null
+      # aborts and shecule a new try in 10ms if `data.rendered` isn't true
+      unless data?.rendered
+        return setTimeout @keep_on_checking, 10
+      
+      # and finally exist phantom process
+      do @ph.exit
 
-        console.error 'got null data'
+      # if users opted for pretty data, format it and return
+      if @cli.argv.pretty
+        @done (pd.xml data.source)
 
-        return done null
-
-      if data.rendered
-
-        return done data.source, data.links
-
-      setTimeout (=> @keep_on_checking url, done), 10
-
-  exit: ->
-    # how to close a page?
-    # @page.close()
-    @ph.exit()
+      # otherwise just return it
+      else
+        @done data.source

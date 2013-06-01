@@ -1,18 +1,22 @@
-.PHONY: build docs
+.PHONY: build
 
-COFFEE=node_modules/coffee-script/bin/coffee
-TOASTER=node_modules/coffee-toaster/bin/toaster
-VERSION=`$(COFFEE) build/bumper.coffee --version`
+CS=node_modules/coffee-script/bin/coffee
+VERSION=`$(CS) build/bumper.coffee --version`
 
 bump.minor:
-	$(COFFEE) build/bumper.coffee --minor
+	$(CS) build/bumper.coffee --minor
 
 bump.major:
-	$(COFFEE) build/bumper.coffee --major
+	$(CS) build/bumper.coffee --major
 
 bump.patch:
-	$(COFFEE) build/bumper.coffee --patch
+	$(CS) build/bumper.coffee --patch
 
+watch:
+	$(CS) -wmco lib src
+
+build:
+	$(CS) -mco lib src
 
 publish:
 	git tag $(VERSION)

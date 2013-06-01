@@ -1,3 +1,14 @@
-#!/usr/bin/env _snapped_coffee
+#!/usr/bin/env node
 
-new (require '../src/snapshooter')
+// requirements
+path = require( 'path' );
+fs = require( 'fs' );
+
+// lib folder
+lib = path.join( __dirname, '..', 'lib', 'snapshooter.js' );
+
+// require class
+Snapshooter = require( lib );
+
+// initializes it
+new Snapshooter;

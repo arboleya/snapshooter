@@ -39,6 +39,9 @@ module.exports = class Cli
       .describe( 'port', 'Preview server port' )
       .default( 'port', 8080 )
 
+      .describe('once', 'Avoid recursivity, loading only the first given url')
+      .describe('stdout', 'Prints crawled content instead of writing file')
+
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')
 

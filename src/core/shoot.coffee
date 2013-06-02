@@ -33,6 +33,9 @@ module.exports = class Shoot
   # start time for contabilization
   start_time: null
 
+  # counters for crawled and failed files
+  crawled_files_num: 0
+  failed_files_num: 0
 
   constructor:( @the, @cli )->
 
@@ -72,15 +75,34 @@ module.exports = class Shoot
     return if @crawled[url] is true
     @crawled[url] = false
 
-    console.log '>'.bold.yellow, url.grey 
+    unless @cli.argv.stdout
+      console.log '>'.bold.yellow, url.grey 
+
     @connections++
     new Crawler @cli, url, ( source )=> 
-      console.log '< '.bold.cyan, url.grey
+
+      unless @cli.argv.stdout
+        console.log '< '.bold.cyan, url.grey
+
       @connections--
-      @crawled[url] = true
+      @crawled[url] = true 
+
       if source?
+        @crawled_files_num++
+      else
+        @failed_files_num++
+
+      if source?
+        if @cli.argv.once
+          if @cli.argv.stdout
+            console.log source
+          else
+            @save_page url, source            
+          return do @finish
+
         @save_page url, source
         @after_crawl source
+
 
 
   # parses all links in the given source, and crawl them
@@ -93,7 +115,14 @@ module.exports = class Shoot
       while (match = reg.exec source)?
         relative = match[1]
         absolute = @root_url + relative
-        if relative isnt '/' and not @crawled[absolute]? and relative isnt '#'
+
+        not_slash = relative isnt '/'
+        not_crawled = not @crawled[absolute]?
+        not_anchor = relative isnt '#'
+        not_image = not (/\.(jpg|jpeg|gif|png)$/m.test relative)
+        not_zip = not (/\.(zip|tar(\.gz)?)$/m.test relative )
+
+        if not_slash and not_image and not_anchor and not_crawled and not_zip
           @pending_urls.push absolute
 
     # starting cralwing them until max_connections is reached
@@ -124,9 +153,12 @@ module.exports = class Shoot
 
 
   finish:->
-    # success status msg
-    ms = do (new Date).getTime - @start_time
-    console.log "\n★  Application crawled successfully in #{ms}ms!".green
+    unless @cli.argv.stdout
+      # success status msg
+      ms = (do (new Date).getTime - @start_time) + ' ms'
+      console.log "\n★  Application crawled successfully in #{ms.magenta}".green
+      console.log '\t Indexed: ' + @crawled_files_num
+      console.log '\t Fail: ' + @failed_files_num
 
     # aborts if webserver isn't needed
     return unless @cli.argv.server

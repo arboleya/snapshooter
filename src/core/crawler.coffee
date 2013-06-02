@@ -15,20 +15,31 @@ module.exports = class Crawler
 
     # creates a new phantom and page instance
     phantom.create '--load-images=false', ( @ph, err1 )=>
-      console.error 'err1', err1 if err1?
+      if err1?
+        msg = '• ERROR '.bold.red + 'phantom.create couldn\'t finish for '.red
+        msg += @url.yellow
+        return @error msg, err1
 
       @ph.createPage ( @page, err2 )=>
-        console.error 'err1', err2 if err2?
+
+        if err2?
+          msg = '• ERROR '.bold.red + 'ph.create couldn\'t finish for '.red
+          msg += @url.yellow
+          return @error msg, err2
 
         # open the given url
-        @page.open @url, ( status )=>
-            
+        @page.open @url, ( status, err3 )=>
+          
+          if err3?
+            msg = '• ERROR '.bold.red + 'page.open couldn\'t finish for '.red
+            msg += @url.yellow
+            return @error msg, err3
+
           # validates http status and rises an error if somethings is wrong
           if status isnt 'success'
             msg = '• ERROR '.bold.red + ' ' + @url.yellow
             msg += " ended with status = ".red + status.bold
-            console.log msg
-            return @done null
+            return @error msg
 
           # start checking page until it's rendered
           do @keep_on_checking
@@ -43,7 +54,7 @@ module.exports = class Crawler
     @page.evaluate -> 
       data =
         rendered: window.crawler and window.crawler.is_rendered
-        source  : document.all[0].outerHTML
+        source: document.all[0].outerHTML
     , ( data )=>
 
       # aborts and shecule a new try in 10ms if `data.rendered` isn't true
@@ -60,3 +71,11 @@ module.exports = class Crawler
       # otherwise just return it
       else
         @done data.source
+
+  # general error reporting and premature callback dispatcher
+  error:( msg, error )->
+    console.error msg
+    if error?
+      console.error error
+    do @ph.exit
+    @done null

@@ -47,24 +47,26 @@ Usage:
   snapshooter [options] [params]
 
 Options:
-  -a, --address  Http address to crawl                              
-  -f, --file     Local file to crawl                                
-  -o, --output   Output folder to save crawled static files         
-  -p, --pretty   Output crawled html files in a pretty fashion way  
-  -s, --server   Start a server for previewing crawled content      
-  --port         Preview server port                                  [default: 8080]
-  --once         Avoid recursivity, loading only the first given url
-  --stdout       Prints crawled content instead of writing file     
-  --ignore       Regex pattern to ignore                             
-  --timeout      Time limit to wait for a page to render              [default: 15000]
-  -v, --version  Shows snapshooter version                          
-  -h, --help     Shows this help screen                             
+  -i, --input            Input url to crawl                                    
+  -o, --output           Output folder to save crawled files                   
+  -e, --exclude          Exclude files matching the given regex exclude pattern
+  -p, --pretty           Output crawled files in a pretty fashion way          
+  -s, --server           Start a server for previewing crawled content         
+  -P, --port             Preview server port                                     [default: 8080]
+  -f, --forward          Avoid crawling links up to the initial url folder     
+  -t, --timeout          Time limit to wait for a page to render                 [default: 15000]
+  -m, --max-connections  Max connections limit, use with care.                   [default: 10]
+  -O, --once             Avoid recursivity, crawling only the first given url  
+  -S, --stdout           Prints crawled content to stdout (use with -O)        
+  -V, --verbose          Shows info logs about files skipped                   
+  -v, --version          Shows snapshooter version                             
+  -h, --help             Shows this help screen                                
 
 
 Examples:
   snapshooter -a <site.com> -o <local-folder>
   snapshooter -a <site.com> -o <local-folder> -p
-  snapshooter -a <site.com> -o <local-folder> -ps [--port 3000] [--once] [--ignore /\.exe$/m] [--timeout 20000]
+  snapshooter -a <site.com> -o <local-folder> -ps [-P 3000] [-O] [-i /\.exe$/m] [-T 20000]
 ````
 
 <a name="integration" />

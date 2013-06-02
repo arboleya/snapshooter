@@ -118,6 +118,10 @@ During develop you may prefer:
 make watch
 ````
 
+### Attention
+
+Do not mess with version number.
+
 # Powered by
  - [CoffeeScript](https://github.com/jashkenas/coffee-script)
  - [PhantomJS-node](https://github.com/sgentle/phantomjs-node)

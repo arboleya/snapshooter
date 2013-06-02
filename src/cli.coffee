@@ -19,17 +19,17 @@ module.exports = class Cli
 
     @argv = (@opts = optimist.usage( @usage )
 
-      .alias('a', 'address')
-      .describe('a', 'Http address to crawl')
-
-      .alias('f', 'file')
-      .describe('f', 'Local file to crawl')
+      .alias('i', 'input')
+      .describe('i', 'Input url to crawl')
 
       .alias('o', 'output')
-      .describe('o', 'Output folder to save crawled static files')
+      .describe('o', 'Output folder to save crawled files')
+
+      .alias('e', 'exclude')
+      .describe('e', 'Exclude files matching the given regex exclude pattern')
 
       .alias('p', 'pretty')
-      .describe('p', 'Output crawled html files in a pretty fashion way')
+      .describe('p', 'Output crawled files in a pretty fashion way')
 
       .alias('s', 'server')
       .describe('s', 'Start a server for previewing crawled content')
@@ -38,21 +38,22 @@ module.exports = class Cli
       .describe('P', 'Preview server port' )
       .default('P', 8080 )
 
-      .alias('F', 'forward')
-      .describe('F', 'Avoid crawling links up to the initial url folder')
-
-      .alias('O', 'once')
-      .describe('O', 'Avoid recursivity, loading only the first given url')
-
-      .alias('S', 'stdout')
-      .describe('S', 'Prints crawled content instead of writing file')
-
-      .alias('i', 'ignore')
-      .describe('i', 'Regex pattern to ignore')
+      .alias('f', 'forward')
+      .describe('f', 'Avoid crawling links up to the initial url folder')
 
       .alias('t', 'timeout')
       .describe('t', 'Time limit to wait for a page to render')
       .default('t', 15000)
+
+      .alias('m', 'max-connections')
+      .describe('m', 'Max connections limit, use with care.')
+      .default('m', 10)
+
+      .alias('O', 'once')
+      .describe('O', 'Avoid recursivity, crawling only the first given url')
+
+      .alias('S', 'stdout')
+      .describe('S', 'Prints crawled content to stdout (use with -O)')
 
       .alias('V', 'verbose')
       .describe('V', 'Shows info logs about files skipped')

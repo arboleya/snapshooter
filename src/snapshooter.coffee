@@ -13,7 +13,7 @@ module.exports = class Snapshooter
     @version = (require './../package.json' ).version
     @cli = new Cli @version
 
-    if @cli.argv.address or @cli.argv.file
+    if @cli.argv.input
       return new Shoot @, @cli
-    
+
     console.log @cli.opts.help() + @cli.examples

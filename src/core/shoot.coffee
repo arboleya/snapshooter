@@ -34,13 +34,13 @@ module.exports = class Shoot
   connections: 0
 
   # max number of connections
-  max_connections: 10
+  max_connections: null
 
   # start time for contabilization
   start_time: null
 
-  # ignore regex
-  ignore: null
+  # exclude regex
+  exclude: null
 
   # counters for statistics
   crawled_files_num: 0
@@ -49,6 +49,9 @@ module.exports = class Shoot
 
 
   constructor:( @the, @cli )->
+
+    # caches max connections
+    @max_connections = @cli.argv.m
 
     # checking if user has phantomjs installed
     unless @has_phantom()
@@ -62,44 +65,29 @@ module.exports = class Shoot
     # initializes array
     @pending_urls = []
 
-    # if some ignore pattern was given, format it for reuse later
-    if @cli.argv.ignore?
-      [all, reg, flags] = /(?:\/)(.+)(?:\/)([mgi]+)$/.exec @cli.argv.ignore
+    # if some exclude pattern was given, format it for reuse later
+    if @cli.argv.exclude?
+      [all, reg, flags] = /(?:\/)(.+)(?:\/)([mgi]+)$/.exec @cli.argv.exclude
       reg = reg.replace /([\/\?])/g, '\\/$1'
-      @ignore = new RegExp reg, flags
+      @exclude = new RegExp reg, flags
 
-    # if address was specified, handle it and set @domain
-    if @cli.argv.address
+    # checks if input has http protocol defined and defines it
+    unless ~@cli.argv.input.indexOf 'http'
 
-      # checks if it has http protocol defined
-      unless ~@cli.argv.address.indexOf 'http'
+      # computes first url to be crawled
+      first_url = @cli.argv.input = 'http://' + @cli.argv.input
 
-        # computes first url to be crawled
-        first_url = @cli.argv.address = 'http://' + @cli.argv.address
+    # removes any '/index.xyz' filename from the end
+    first_url = first_url.replace /\/index\.\w+$/m, ''
 
-        # removes any '/index.xyz' filename from the end
-        first_url = first_url.replace /\/index\.\w+$/m, ''
+    # removing trailing slash
+    first_url = first_url.replace /\/+$/m, ''
 
-        # removing trailing slash
-        first_url = first_url.replace /\/+$/m, ''
+    # filters domain
+    @domain = (first_url.match /https?:\/\/[^\/]+/)[0]
 
-        # clear anything else after the domain
-        @domain = (first_url.match /https?:\/\/[^\/]+/)[0]
-
-        # computes root folder for the first url
-        @root_folder = first_url
-
-    # otherwise set file as @domain
-    else
-      # computes first file
-      first_url = @cli.argv.file
-
-      # computes domain
-      @domain = (@cli.argv.match.match /(.+)\/[\w-_\.]+\.html/)[0]
-
-      # computes root folder
-      reg = /https?:\/\/[^\/]+\/(.+)\/[\w-_\.]+\.html/
-      @root_folder = (first_url.match reg)[0]
+    # computes root folder for the first url
+    @root_folder = first_url
 
     # saves current time for contabilization
     @start_time = do (new Date).getTime
@@ -253,10 +241,10 @@ module.exports = class Shoot
     else
       not_backwards = true
 
-    if @ignore?
-      not_ignore = not (@ignore.test absolute)
+    if @exclude?
+      not_exclude = not (@exclude.test absolute)
     else
-      not_ignore = true
+      not_exclude = true
 
     flags = [
       not_slash,
@@ -265,7 +253,7 @@ module.exports = class Shoot
       not_image,
       not_zip,
       not_pdf,
-      not_ignore,
+      not_exclude,
       not_backwards
     ]
 

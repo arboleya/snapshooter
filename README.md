@@ -64,9 +64,9 @@ Options:
 
 
 Examples:
-  snapshooter -a <site.com> -o <local-folder>
-  snapshooter -a <site.com> -o <local-folder> -p
-  snapshooter -a <site.com> -o <local-folder> -ps [-P 3000] [-O] [-i /\.exe$/m] [-T 20000]
+  snapshooter -i <site.com> -o <local-folder>
+  snapshooter -i <site.com> -o <local-folder> -p
+  snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e /\.exe$/m] [-t 20000]
 ````
 
 <a name="integration" />

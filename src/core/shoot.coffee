@@ -18,8 +18,14 @@ module.exports = class Shoot
   # Dictionary (url -> true|false)
   crawled: {}
 
-  # root address to be crawled
-  root_url: null
+  # array of skipped urls
+  skipped_urls: {}
+
+  # domain being crawled
+  domain: null
+
+  # root folder of the first url
+  root_folder: null
 
   # array of pending_urls urls to crawl
   pending_urls: null
@@ -36,9 +42,10 @@ module.exports = class Shoot
   # ignore regex
   ignore: null
 
-  # counters for crawled and failed files
+  # counters for statistics
   crawled_files_num: 0
   failed_files_num: 0
+  skipped_files_num: 0
 
 
   constructor:( @the, @cli )->
@@ -55,36 +62,50 @@ module.exports = class Shoot
     # initializes array
     @pending_urls = []
 
-    # if some ignore patter was given, format it
+    # if some ignore pattern was given, format it for reuse later
     if @cli.argv.ignore?
       [all, reg, flags] = /(?:\/)(.+)(?:\/)([mgi]+)$/.exec @cli.argv.ignore
       reg = reg.replace /([\/\?])/g, '\\/$1'
       @ignore = new RegExp reg, flags
 
-    # if address was specified
+    # if address was specified, handle it and set @domain
     if @cli.argv.address
 
-      # checks if it has http protocol defined, and if not define it
-      # and save in @root_url
+      # checks if it has http protocol defined
       unless ~@cli.argv.address.indexOf 'http'
-        first_url = 'http://' + @cli.argv.address
 
-        # cleaning anything else after the domain
-        @root_url = (first_url.match /https?:\/\/[^\/]+/)[0]
+        # computes first url to be crawled
+        first_url = @cli.argv.address = 'http://' + @cli.argv.address
 
-    # otherwise set file as @root_url
+        # clear anything else after the domain
+        @domain = (first_url.match /https?:\/\/[^\/]+/)[0]
+
+        # computes root folder for the first url
+        @root_folder = first_url
+
+    # otherwise set file as @domain
     else
-      @root_url = first_url = @cli.argv.file
-    
+      # computes first file
+      first_url = @cli.argv.file
+
+      # computes domain
+      @domain = (@cli.argv.match.match /(.+)\/[\w-_\.]+\.html/)[0]
+
+      # computes root folder
+      reg = /https?:\/\/[^\/]+\/(.+)\/[\w-_\.]+\.html/
+      @root_folder = (first_url.match reg)[0]
+
+    # saves current time for contabilization
     @start_time = do (new Date).getTime
 
-    @crawled[first_url] = false
+    # start crawling
     @crawl first_url
 
 
   # crawl the given url and recursively crawl all the links found within
   crawl:( url )->
-    return if @crawled[url] is on
+    return unless @crawled[url] is undefined
+    @crawled[url] = off
 
     unless @cli.argv.stdout
       console.log '>'.bold.yellow, url.grey 
@@ -96,7 +117,7 @@ module.exports = class Shoot
         console.log '< '.bold.cyan, url.grey
 
       @connections--
-      @crawled[url] = if source? then on else off
+      @crawled[url] = on
 
       if source?
         @crawled_files_num++
@@ -128,14 +149,31 @@ module.exports = class Shoot
 
         # computes absolut link path
         relative = match[1]
-        absolute = @root_url + relative
+        absolute = @domain + relative
 
         # checks if it should be crawled
-        if @url_is_passing relative, absolute
+        passed = @url_is_passing relative, absolute
+        if passed
 
-          # and crawl it :)
-          @crawled[absolute] = off
+          # and adds it to the pending_urls to be cralwed
           @pending_urls.push absolute
+
+        # Otherwise just skips it.
+        else
+          # If passed is -1, file was alread crawled.
+          # If passed is false, file was skipped according other rules.
+          skipped = passed isnt -1
+
+          # files already skipped will not appear as skipped more than once
+          skipped and= @skipped_urls[absolute] is undefined
+
+          if skipped
+            @skipped_files_num++
+
+          # An info message will be shown if user has set verbose=true
+          if skipped and @cli.argv.verbose
+            @skipped_urls[absolute] = on
+            console.log '• INFO '.bold.cyan + "skipping #{absolute.yellow}".cyan
 
     # starting cralwing them until max_connections is reached
     while @connections < @max_connections and @pending_urls.length
@@ -149,7 +187,7 @@ module.exports = class Shoot
   # the page source
   save_page:( url, source )->
     # computes relative url
-    relative_url = (url.replace @root_url, '') or '/'
+    relative_url = (url.replace @domain, '') or '/'
 
     # computes output folder and file
     output_folder = path.join @cli.argv.output, relative_url
@@ -170,7 +208,8 @@ module.exports = class Shoot
       ms = (do (new Date).getTime - @start_time) + ' ms'
       console.log "\n★  Application crawled successfully in #{ms.magenta}".green
       console.log '\t Indexed: ' + @crawled_files_num
-      console.log '\t Fail: ' + @failed_files_num
+      console.log '\t Skipped: ' + @skipped_files_num
+      console.log '\t Failed: ' + @failed_files_num
 
     # aborts if webserver isn't needed
     return unless @cli.argv.server
@@ -195,11 +234,16 @@ module.exports = class Shoot
   # performing some checks to see if the url should be crawled or not
   url_is_passing:( relative, absolute )->
     not_slash = absolute isnt '/'
-    not_crawled = not @crawled[absolute]?
+    not_crawled = @crawled[absolute] is undefined
     not_anchor = relative isnt '#'
     not_image = not (/\.(jpg|jpeg|gif|png)$/m.test absolute)
     not_zip = not (/\.(zip|tar(\.gz)?)$/m.test absolute )
     not_pdf = not (/\.(pdf)$/m.test absolute )
+
+    if @cli.argv.forward
+      not_backwards = (absolute.indexOf @root_folder) is 0
+    else
+      not_backwards = true
 
     if @ignore?
       not_ignore = not (@ignore.test absolute)
@@ -213,11 +257,18 @@ module.exports = class Shoot
       not_image,
       not_zip,
       not_pdf,
-      not_ignore
+      not_ignore,
+      not_backwards
     ]
 
     passed = true
     for flag in flags
       passed and= flag
 
-    return passed
+    if passed
+      return true
+    else
+      if not_crawled is false
+        return -1
+      else
+        return false

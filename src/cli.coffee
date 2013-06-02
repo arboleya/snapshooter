@@ -13,7 +13,7 @@ module.exports = class Cli
     Examples:
       snapshooter -a <site.com> -o <local-folder>
       snapshooter -a <site.com> -o <local-folder> -p
-      snapshooter -a <site.com> -o <local-folder> -ps [--port 3000] [--port 3000] [--once] [--ignore /\\.exe$/m] [--timeout 20000]
+      snapshooter -a <site.com> -o <local-folder> -ps [-P 3000] [-O] [-i /\\.exe$/m] [-T 20000]
 
     """
 
@@ -34,17 +34,28 @@ module.exports = class Cli
       .alias('s', 'server')
       .describe('s', 'Start a server for previewing crawled content')
 
-      .describe('port', 'Preview server port' )
-      .default('port', 8080 )
+      .alias('P', 'port')
+      .describe('P', 'Preview server port' )
+      .default('P', 8080 )
 
-      .describe('once', 'Avoid recursivity, loading only the first given url')
+      .alias('F', 'forward')
+      .describe('F', 'Avoid crawling links up to the initial url folder')
 
-      .describe('stdout', 'Prints crawled content instead of writing file')
+      .alias('O', 'once')
+      .describe('O', 'Avoid recursivity, loading only the first given url')
 
-      .describe('ignore', 'Regex pattern to ignore')
+      .alias('S', 'stdout')
+      .describe('S', 'Prints crawled content instead of writing file')
 
-      .describe('timeout', 'Time limit to wait for a page to render')
-      .default('timeout', 15000)
+      .alias('i', 'ignore')
+      .describe('i', 'Regex pattern to ignore')
+
+      .alias('t', 'timeout')
+      .describe('t', 'Time limit to wait for a page to render')
+      .default('t', 15000)
+
+      .alias('V', 'verbose')
+      .describe('V', 'Shows info logs about files skipped')
 
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')

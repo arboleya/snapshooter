@@ -15,18 +15,24 @@ module.exports = class Snapshooter
     @version = (require './../package.json' ).version
     @cli = new Cli @version
 
+    if @cli.argv.version
+      return console.log @version
+
     if @cli.argv.input
-      
+
+      unless @cli.argv.output 
+        return console.log '• ERROR '.bold.red + 'Output dir not informed!'
+
       if fs.existsSync @cli.argv.output
         return @prompt 'Output folder exists, overwite?', /.*/, 'y', (answer)=> 
           if answer.toLowerCase() is 'y'
             fsu.rm_rf @cli.argv.output
-            @init()
+            do @init
           else
             console.log 'Aborting..'
             do process.exit
       else
-        console.log '• ERROR '.bold + 'Output dir not informed!'.red
+        return do @init
 
     console.log @cli.opts.help() + @cli.examples
 

@@ -43,24 +43,28 @@ npm install -g snapshooter
 ## Help
 
 ````bash
+Usage:
+  snapshooter [options] [params]
+
 Options:
-  -a, --address  Http address to crawl                            
-  -f, --file     Local file to crawl                              
-  -o, --output   Output folder to save crawled static files       
-  -p, --pretty   Output crawled html files in a pretty fashion way
-  -s, --server   Start a server for previewing crawled content    
-  --port         Preview server port                                [default: 8080]
-  -v, --version  Shows snapshooter version                        
-  -h, --help     Shows this help screen                           
+  -a, --address  Http address to crawl                              
+  -f, --file     Local file to crawl                                
+  -o, --output   Output folder to save crawled static files         
+  -p, --pretty   Output crawled html files in a pretty fashion way  
+  -s, --server   Start a server for previewing crawled content      
+  --port         Preview server port                                  [default: 8080]
+  --once         Avoid recursivity, loading only the first given url
+  --stdout       Prints crawled content instead of writing file     
+  --ignore       Regex patter to ignore                             
+  --timeout      Time limit to wait for a page to render              [default: 15000]
+  -v, --version  Shows snapshooter version                          
+  -h, --help     Shows this help screen                             
+
 
 Examples:
   snapshooter -a <site.com> -o <local-folder>
   snapshooter -a <site.com> -o <local-folder> -p
-  snapshooter -a <site.com> -o <local-folder> -ps [--port 3000]
-
-  snapshooter -f <local-file.html> -o <local-folder>
-  snapshooter -f <site.com> -o <local-folder> -p
-  snapshooter -f <site.com> -o <local-folder> -ps [--port 3000]
+  snapshooter -a <site.com> -o <local-folder> -ps [--port 3000] [--once] [--ignore /\.exe$/m] [--timeout 20000]
 ````
 
 <a name="integration" />

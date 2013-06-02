@@ -41,7 +41,7 @@ module.exports = class Cli
 
       .describe('stdout', 'Prints crawled content instead of writing file')
 
-      .describe('ignore', 'Regex patter to ignore')
+      .describe('ignore', 'Regex pattern to ignore')
 
       .describe('timeout', 'Time limit to wait for a page to render')
       .default('timeout', 15000)

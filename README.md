@@ -55,7 +55,7 @@ Options:
   --port         Preview server port                                  [default: 8080]
   --once         Avoid recursivity, loading only the first given url
   --stdout       Prints crawled content instead of writing file     
-  --ignore       Regex patter to ignore                             
+  --ignore       Regex pattern to ignore                             
   --timeout      Time limit to wait for a page to render              [default: 15000]
   -v, --version  Shows snapshooter version                          
   -h, --help     Shows this help screen                             

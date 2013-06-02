@@ -8,10 +8,11 @@ module.exports = class Crawler
 
   ph: null
   page: null
+  start_time: null
 
   port = 12345
-
   constructor:( @cli, @url, @done )->
+    @start_time = do (new Date).getTime
 
     # creates a new phantom and page instance
     phantom.create '--load-images=false', ( @ph, err1 )=>
@@ -59,7 +60,12 @@ module.exports = class Crawler
 
       # aborts and shecule a new try in 10ms if `data.rendered` isn't true
       unless data?.rendered
-        return setTimeout @keep_on_checking, 10
+        if (do (new Date).getTime) - @start_time > @cli.argv.timeout
+          msg = '• ERROR '.bold.red + @url.yellow
+          msg += ' took too long to render, skipping'.red
+          return @error msg
+        else
+          return setTimeout @keep_on_checking, 100
       
       # and finally exist phantom process
       do @ph.exit

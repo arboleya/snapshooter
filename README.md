@@ -1,8 +1,10 @@
 # Snapshooter
 
-Simple 'javascript' crawler.
+Simple crawler for Single Page Applications.
 
 > Version 0.1.1
+
+[![Dependency Status](https://gemnasium.com/serpentem/snapshooter.png)](https://gemnasium.com/serpentem/snapshooter)
 
 # About
 

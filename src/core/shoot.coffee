@@ -1,5 +1,4 @@
 fs   = require 'fs'
-exec = (require 'child_process').exec
 path = require 'path'
 fsu  = require 'fs-util'
 connect  = require 'connect'
@@ -52,15 +51,6 @@ module.exports = class Shoot
 
     # caches max connections
     @max_connections = @cli.argv.m
-
-    # checking if user has phantomjs installed
-    unless @has_phantom()
-      msg = """
-        #{'Error'.bold.red} Install #{'phantomjs'.yellow} before indexing pages!
-          • http://phantomjs.org
-      """
-      console.log msg
-      process.exit code = process.ENOENT
 
     # initializes array
     @pending_urls = []
@@ -219,13 +209,6 @@ module.exports = class Shoot
     address = 'http://localhost:' + @cli.argv.port
     root = @cli.argv.output
     console.log "\nPreview server started for #{root} at: \n\t".grey, address
-
-
-  # checks if system has phantomjs installed
-  has_phantom:->
-    exec "phantomjs -v", (error, stdout, stderr) =>
-      return /phantomjs: command not found/.test stderr
-
 
   # performing some checks to see if the url should be crawled or not
   url_is_passing:( relative, absolute )->

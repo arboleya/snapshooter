@@ -22,6 +22,7 @@ module.exports = class Cli
     """
 
     @argv = (@opts = optimist.usage( @usage )
+
       .alias('a', 'address')
       .describe('a', 'Http address to crawl')
 
@@ -36,15 +37,23 @@ module.exports = class Cli
 
       .alias('s', 'server')
       .describe('s', 'Start a server for previewing crawled content')
-      .describe( 'port', 'Preview server port' )
-      .default( 'port', 8080 )
+
+      .describe('port', 'Preview server port' )
+      .default('port', 8080 )
 
       .describe('once', 'Avoid recursivity, loading only the first given url')
+
       .describe('stdout', 'Prints crawled content instead of writing file')
+
+      .describe('ignore', 'Regex patter to ignore')
+
+      .describe('timeout', 'Time limit to wait for a page to render')
+      .default('timeout', 15000)
 
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')
 
       .alias('h', 'help')
       .describe('h', 'Shows this help screen')
+
     ).argv

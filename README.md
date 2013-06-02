@@ -8,8 +8,10 @@ Simple crawler for Single Page Applications.
 
 # About
 
-Snapshooter is basicly a crawler, which will load a URL, wait the javascript to
-render, save it as plain HTML file and carry on until all `hrefs` are rendered.
+Snapshooter will load a URL, wait the javascript to render and save it as plain
+HTML.
+
+This will be done recursively until all found links in the start URL is saved.
 
 # Issues
 

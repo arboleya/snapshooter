@@ -1,7 +1,11 @@
 # Changelog
 
+## 0.2.2 - 02/06/2013
+ * Fixing and improving validations at startup one more time
+ * Validating specific version of installed phantomjs to reduce problems
+
 ## 0.2.1 - 02/06/2013
- * Fixing validations on startup
+ * Fixing validations at startup
 
 ## 0.2.0 - 02/06/2013
  * Snapshooter REVAMPED!

@@ -25,8 +25,6 @@ Do not hesitate to open a feature request or a bug report.
     - [Integration](#integration)
   - [Contributing](#contributing)
 
-Have fun. :)
-
 <a name="requirements" />
 ## Requirements
 

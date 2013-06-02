@@ -77,6 +77,12 @@ module.exports = class Shoot
         # computes first url to be crawled
         first_url = @cli.argv.address = 'http://' + @cli.argv.address
 
+        # removes any '/index.xyz' filename from the end
+        first_url = first_url.replace /\/index\.\w+$/m, ''
+
+        # removing trailing slash
+        first_url = first_url.replace /\/+$/m, ''
+
         # clear anything else after the domain
         @domain = (first_url.match /https?:\/\/[^\/]+/)[0]
 

@@ -13,11 +13,7 @@ module.exports = class Cli
     Examples:
       snapshooter -a <site.com> -o <local-folder>
       snapshooter -a <site.com> -o <local-folder> -p
-      snapshooter -a <site.com> -o <local-folder> -ps [--port 3000]
-
-      snapshooter -f <local-file.html> -o <local-folder>
-      snapshooter -f <site.com> -o <local-folder> -p
-      snapshooter -f <site.com> -o <local-folder> -ps [--port 3000]
+      snapshooter -a <site.com> -o <local-folder> -ps [--port 3000] [--port 3000] [--once] [--ignore /\\.exe$/m] [--timeout 20000]
 
     """
 

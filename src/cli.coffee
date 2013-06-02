@@ -35,8 +35,8 @@ module.exports = class Cli
       .describe('p', 'Output crawled html files in a pretty fashion way')
 
       .alias('s', 'server')
-      .describe('s', 'Start a server for previewing the cralwed content')
-      .describe( 'port', 'Preview server port (default=8080)' )
+      .describe('s', 'Start a server for previewing crawled content')
+      .describe( 'port', 'Preview server port' )
       .default( 'port', 8080 )
 
       .alias('v', 'version')

@@ -33,9 +33,13 @@ module.exports = class Shoot
   # start time for contabilization
   start_time: null
 
+  # ignore regex
+  ignore: null
+
   # counters for crawled and failed files
   crawled_files_num: 0
   failed_files_num: 0
+
 
   constructor:( @the, @cli )->
 
@@ -50,6 +54,12 @@ module.exports = class Shoot
 
     # initializes array
     @pending_urls = []
+
+    # if some ignore patter was given, format it
+    if @cli.argv.ignore?
+      [all, reg, flags] = /(?:\/)(.+)(?:\/)([mgi]+)$/.exec @cli.argv.ignore
+      reg = reg.replace /([\/\?])/g, '\\/$1'
+      @ignore = new RegExp reg, flags
 
     # if address was specified
     if @cli.argv.address
@@ -67,13 +77,14 @@ module.exports = class Shoot
       @root_url = first_url = @cli.argv.file
     
     @start_time = do (new Date).getTime
+
+    @crawled[first_url] = false
     @crawl first_url
 
 
   # crawl the given url and recursively crawl all the links found within
   crawl:( url )->
-    return if @crawled[url] is true
-    @crawled[url] = false
+    return if @crawled[url] is on
 
     unless @cli.argv.stdout
       console.log '>'.bold.yellow, url.grey 
@@ -85,24 +96,23 @@ module.exports = class Shoot
         console.log '< '.bold.cyan, url.grey
 
       @connections--
-      @crawled[url] = true 
+      @crawled[url] = if source? then on else off
 
       if source?
         @crawled_files_num++
       else
         @failed_files_num++
 
-      if source?
-        if @cli.argv.once
-          if @cli.argv.stdout
-            console.log source
-          else
-            @save_page url, source            
-          return do @finish
 
+      if @cli.argv.stdout
+        console.log source
+      else
         @save_page url, source
+      
+      if @cli.argv.once
+        do @finish
+      else
         @after_crawl source
-
 
 
   # parses all links in the given source, and crawl them
@@ -110,19 +120,21 @@ module.exports = class Shoot
     reg = /<a\s+href\s*=\s*["']+(?!http)([^"']+)/g
     links = []
 
-    # filters all links
+    # if source is not null
     if source?
+
+      # filters all links
       while (match = reg.exec source)?
+
+        # computes absolut link path
         relative = match[1]
         absolute = @root_url + relative
 
-        not_slash = relative isnt '/'
-        not_crawled = not @crawled[absolute]?
-        not_anchor = relative isnt '#'
-        not_image = not (/\.(jpg|jpeg|gif|png)$/m.test relative)
-        not_zip = not (/\.(zip|tar(\.gz)?)$/m.test relative )
+        # checks if it should be crawled
+        if @url_is_passing relative, absolute
 
-        if not_slash and not_image and not_anchor and not_crawled and not_zip
+          # and crawl it :)
+          @crawled[absolute] = off
           @pending_urls.push absolute
 
     # starting cralwing them until max_connections is reached
@@ -170,9 +182,42 @@ module.exports = class Shoot
 
     # webserver start msg
     address = 'http://localhost:' + @cli.argv.port
-    console.log '\nPreview server started at: \n\t'.grey, address
+    root = @cli.argv.output
+    console.log "\nPreview server started for #{root} at: \n\t".grey, address
+
 
   # checks if system has phantomjs installed
   has_phantom:->
     exec "phantomjs -v", (error, stdout, stderr) =>
       return /phantomjs: command not found/.test stderr
+
+
+  # performing some checks to see if the url should be crawled or not
+  url_is_passing:( relative, absolute )->
+    not_slash = absolute isnt '/'
+    not_crawled = not @crawled[absolute]?
+    not_anchor = relative isnt '#'
+    not_image = not (/\.(jpg|jpeg|gif|png)$/m.test absolute)
+    not_zip = not (/\.(zip|tar(\.gz)?)$/m.test absolute )
+    not_pdf = not (/\.(pdf)$/m.test absolute )
+
+    if @ignore?
+      not_ignore = not (@ignore.test absolute)
+    else
+      not_ignore = true
+
+    flags = [
+      not_slash,
+      not_crawled,
+      not_anchor,
+      not_image,
+      not_zip,
+      not_pdf,
+      not_ignore
+    ]
+
+    passed = true
+    for flag in flags
+      passed and= flag
+
+    return passed

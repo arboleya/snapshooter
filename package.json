@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "author": "Henrique Matias <hems.inlet+npm@gmail.com>",
   "contributors": ["Anderson Arboleya <anderson@arboleya.me>"],
-  "description": "Sinmple crawler for Single Single Applications.",
+  "description": "Simple crawler for Single Page Applications",
   "keywords": ["crawler", "html", "javascript", "ajax", "render"],
 
   "directories": {"lib": "./lib/"},

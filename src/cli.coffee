@@ -4,7 +4,7 @@ module.exports = class Cli
 
   constructor:( @version )->
     @usage = "#{'Snapshooter'} " + "v#{@version}\n".grey
-    @usage += "Simple crawler for Single Page Applications.\n\n".grey
+    @usage += "Simple crawler for Single Page Applications\n\n".grey
 
     @usage += "#{'Usage:'}\n"
     @usage += "  snapshooter [#{'options'.green}] [#{'params'.green}]"

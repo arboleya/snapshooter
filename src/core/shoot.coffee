@@ -167,12 +167,14 @@ module.exports = class Shoot
           # files already skipped will not appear as skipped more than once
           skipped and= @skipped_urls[absolute] is undefined
 
+          # if its being skipped for the first time
           if skipped
+            @skipped_urls[absolute] = on
             @skipped_files_num++
 
-          # An info message will be shown if user has set verbose=true
+          # An info message will be shown if user has set verbose=true and file
+          # is being skipped for the first time
           if skipped and @cli.argv.verbose
-            @skipped_urls[absolute] = on
             console.log '• INFO '.bold.cyan + "skipping #{absolute.yellow}".cyan
 
     # starting cralwing them until max_connections is reached

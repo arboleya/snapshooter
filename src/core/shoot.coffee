@@ -30,6 +30,9 @@ module.exports = class Shoot
   # max number of connections
   max_connections: 10
 
+  # start time for contabilization
+  start_time: null
+
 
   constructor:( @the, @cli )->
 
@@ -45,13 +48,23 @@ module.exports = class Shoot
     # initializes array
     @pending_urls = []
 
-    # checks if address has http protocol defined, and if not define it
+    # if address was specified
     if @cli.argv.address
-      unless ~@cli.argv.address.indexOf 'http'
-        @cli.argv.address = 'http://' + @cli.argv.address
 
-    @root_url = @cli.argv.address or @cli.argv.file
-    @crawl @root_url
+      # checks if it has http protocol defined, and if not define it
+      # and save in @root_url
+      unless ~@cli.argv.address.indexOf 'http'
+        first_url = 'http://' + @cli.argv.address
+
+        # cleaning anything else after the domain
+        @root_url = (first_url.match /https?:\/\/[^\/]+/)[0]
+
+    # otherwise set file as @root_url
+    else
+      @root_url = first_url = @cli.argv.file
+    
+    @start_time = do (new Date).getTime
+    @crawl first_url
 
 
   # crawl the given url and recursively crawl all the links found within
@@ -65,13 +78,14 @@ module.exports = class Shoot
       console.log '< '.bold.cyan, url.grey
       @connections--
       @crawled[url] = true
-      @save_page url, source
-      @after_crawl source
+      if source?
+        @save_page url, source
+        @after_crawl source
 
 
   # parses all links in the given source, and crawl them
   after_crawl:( source )->
-    reg = /a href="(.+)"/g
+    reg = /<a\s+href\s*=\s*["']+(?!http)([^"']+)/g
     links = []
 
     # filters all links
@@ -79,7 +93,7 @@ module.exports = class Shoot
       while (match = reg.exec source)?
         relative = match[1]
         absolute = @root_url + relative
-        if relative isnt '/' and not @crawled[absolute]?
+        if relative isnt '/' and not @crawled[absolute]? and relative isnt '#'
           @pending_urls.push absolute
 
     # starting cralwing them until max_connections is reached
@@ -111,7 +125,8 @@ module.exports = class Shoot
 
   finish:->
     # success status msg
-    console.log '\n★  Application crawled successfully!'.green
+    ms = do (new Date).getTime - @start_time
+    console.log "\n★  Application crawled successfully in #{ms}ms!".green
 
     # aborts if webserver isn't needed
     return unless @cli.argv.server

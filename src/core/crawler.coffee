@@ -14,7 +14,7 @@ module.exports = class Crawler
   constructor:( @cli, @url, @done )->
 
     # creates a new phantom and page instance
-    phantom.create ( @ph, err1 )=>
+    phantom.create '--load-images=false', ( @ph, err1 )=>
       console.error 'err1', err1 if err1?
 
       @ph.createPage ( @page, err2 )=>
@@ -25,7 +25,10 @@ module.exports = class Crawler
             
           # validates http status and rises an error if somethings is wrong
           if status isnt 'success'
-            console.error @url, 'ended with status = ' + status
+            msg = '• ERROR '.bold.red + ' ' + @url.yellow
+            msg += " ended with status = ".red + status.bold
+            console.log msg
+            return @done null
 
           # start checking page until it's rendered
           do @keep_on_checking
@@ -41,7 +44,7 @@ module.exports = class Crawler
       data =
         rendered: window.crawler and window.crawler.is_rendered
         source  : document.all[0].outerHTML
-    , ( data, error )=>
+    , ( data )=>
 
       # aborts and shecule a new try in 10ms if `data.rendered` isn't true
       unless data?.rendered

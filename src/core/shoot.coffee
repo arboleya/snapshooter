@@ -32,6 +32,17 @@ module.exports = class Shoot
 
 
   constructor:( @the, @cli )->
+
+    # checking if user has phantomjs installed
+    unless @has_phantom()
+      msg = """
+        #{'Error'.bold.red} Install #{'phantomjs'.yellow} before indexing pages!
+          • http://phantomjs.org
+      """
+      console.log msg
+      process.exit code = process.ENOENT
+
+    # initializes array
     @pending_urls = []
 
     # checks if address has http protocol defined, and if not define it
@@ -113,3 +124,8 @@ module.exports = class Shoot
     # webserver start msg
     address = 'http://localhost:' + @cli.argv.port
     console.log '\nPreview server started at: \n\t'.grey, address
+
+  # checks if system has phantomjs installed
+  has_phantom:->
+    exec "phantomjs -v", (error, stdout, stderr) =>
+      return /phantomjs: command not found/.test stderr

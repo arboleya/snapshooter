@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1 - 02/06/2013
+ * Fixing validations on startup
+
 ## 0.2.0 - 02/06/2013
  * Snapshooter REVAMPED!
  * Switching phantomjs bridge library

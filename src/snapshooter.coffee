@@ -24,7 +24,7 @@ module.exports = class Snapshooter
     # if user has set some input
     if @cli.argv.input
 
-      # check if phantom is ok and initialize
+      # check if phantomjs is ok and initialize
       return @check_phantom => do @init
 
     # if execution reach here, just show help screen
@@ -71,7 +71,7 @@ module.exports = class Snapshooter
 
         # raise an alert to install it
         msg = ('• ERROR'.bold + ' First you must to install ').red
-        msg += 'phantom v1.9.0'.yellow + ' or greater '.red
+        msg += 'phantomjs v1.9.0'.yellow + ' or greater '.red
         msg += '\n\t➜  http://phantomjs.org'.cyan
 
         console.error msg

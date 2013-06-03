@@ -57,8 +57,16 @@ module.exports = class Shoot
 
     # if some exclude pattern was given, format it for reuse later
     if @cli.argv.exclude?
-      [all, reg, flags] = /(?:\/)(.+)(?:\/)([mgi]+)$/.exec @cli.argv.exclude
+      # regex to filter the given exclude regex pattern
+      reg = /[\/'"]+(.+)(?:\/)([mgi]+)['"]*$/m
+
+      # separates what matters
+      [all, reg, flags] = reg.exec @cli.argv.exclude
+
+      # escape special chars
       reg = reg.replace /([\/\?])/g, '\\/$1'
+
+      # save it as a regular regex
       @exclude = new RegExp reg, flags
 
     # checks if input has http protocol defined and defines it
@@ -131,7 +139,7 @@ module.exports = class Shoot
       # filters all links
       while (match = reg.exec source)?
 
-        # computes absolut link path
+        # computes absolute link path
         relative = match[1]
         absolute = @domain + relative
 
@@ -139,12 +147,12 @@ module.exports = class Shoot
         passed = @url_is_passing relative, absolute
         if passed
 
-          # and adds it to the pending_urls to be cralwed
+          # and adds it to the pending_urls to be crawled
           @pending_urls.push absolute
 
         # Otherwise just skips it.
         else
-          # If passed is -1, file was alread crawled.
+          # If passed is -1, file was already crawled.
           # If passed is false, file was skipped according other rules.
           skipped = passed isnt -1
 
@@ -161,7 +169,7 @@ module.exports = class Shoot
           if skipped and @cli.argv.verbose
             console.log '• INFO '.bold.cyan + "skipping #{absolute.yellow}".cyan
 
-    # starting cralwing them until max_connections is reached
+    # starting crawling them until max_connections is reached
     while @connections < @max_connections and @pending_urls.length
       @crawl do @pending_urls.shift
 

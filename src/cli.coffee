@@ -13,7 +13,7 @@ module.exports = class Cli
     Examples:
       snapshooter -i <site.com> -o <local-folder>
       snapshooter -i <site.com> -o <local-folder> -p
-      snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e /\\.exe$/m] [-t 20000]
+      snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e '/\\.exe$/m'] [-t 20000]
 
     """
 
@@ -42,8 +42,8 @@ module.exports = class Cli
       .describe('f', 'Avoid crawling links up to the initial url folder')
 
       .alias('t', 'timeout')
-      .describe('t', 'Time limit to wait for a page to render')
-      .default('t', 15000)
+      .describe('t', 'Time limit (in seconds) to wait for a page to render')
+      .default('t', 15)
 
       .alias('m', 'max-connections')
       .describe('m', 'Max connections limit, use with care.')

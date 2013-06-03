@@ -2,7 +2,7 @@ phantom = require 'phantom'
 pd = (require 'pretty-data').pd
 
 ###
-  Create and instance of phantom
+  Create and instantiate phantomjs thought phantom
 ###
 module.exports = class Crawler
 
@@ -58,16 +58,16 @@ module.exports = class Crawler
         source: document.all[0].outerHTML
     , ( data )=>
 
-      # aborts and shecule a new try in 10ms if `data.rendered` isn't true
+      # aborts and schedule a new try in 100ms if `data.rendered` isn't true
       unless data?.rendered
-        if (do (new Date).getTime) - @start_time > @cli.argv.timeout
+        if (do (new Date).getTime) - @start_time > (@cli.argv.timeout * 1000)
           msg = '• ERROR '.bold.red + @url.yellow
           msg += ' took too long to render, skipping'.red
           return @error msg
         else
           return setTimeout @keep_on_checking, 100
       
-      # and finally exist phantom process
+      # and finally exit phantom process
       do @ph.exit
 
       # if users opted for pretty data, format it and return

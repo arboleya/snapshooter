@@ -26,7 +26,7 @@ module.exports = class Cli
       .describe('o', 'Output folder to save crawled files')
 
       .alias('e', 'exclude')
-      .describe('e', 'Exclude files matching the given regex exclude pattern')
+      .describe('e', 'Regex pattern for excluding files (pass between quotes)')
 
       .alias('p', 'pretty')
       .describe('p', 'Output crawled files in a pretty fashion way')

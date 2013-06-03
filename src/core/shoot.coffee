@@ -55,19 +55,30 @@ module.exports = class Shoot
     # initializes array
     @pending_urls = []
 
-    # if some exclude pattern was given, format it for reuse later
+    # if some exclude pattern was given
     if @cli.argv.exclude?
+
       # regex to filter the given exclude regex pattern
-      reg = /[\/'"]+(.+)(?:\/)([mgi]+)['"]*$/m
+      reg = /[\/'"]+(.+)(?:\/)([mgi]*)['"]*$/m
 
       # separates what matters
       [all, reg, flags] = reg.exec @cli.argv.exclude
 
-      # escape special chars
-      reg = reg.replace /([\/\?])/g, '\\/$1'
+      try
 
-      # save it as a regular regex
-      @exclude = new RegExp reg, flags
+        # save it as a regular regex
+        @exclude = new RegExp reg, flags
+
+        # import info about exclude (to reduce frustration)
+        msg = ' • WARN'.bold + ' Exclude filter in use: ' + @exclude
+        console.log msg.yellow
+      catch err
+        msg = ' • ERROR '.bold + err
+        console.log msg.red
+        console.log 'Did you inform your pattern between quotes?'.cyan
+        do process.exit
+      
+
 
     # checks if input has http protocol defined and defines it
     unless ~@cli.argv.input.indexOf 'http'

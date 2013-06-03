@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 - 03/06/2013
+ * Passing regexes between single/double quotes is now mandatory
+ * Changing --timeout to use seconds instead of milliseconds
+
 ## 0.2.2 - 02/06/2013
  * Fixing and improving validations at startup one more time
  * Validating specific version of installed phantomjs to reduce problems

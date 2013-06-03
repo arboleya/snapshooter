@@ -2,7 +2,7 @@
 
 Simple crawler for Single Page Applications.
 
-> Version 0.2.2
+> Version 0.2.3
 
 [![Dependency Status](https://gemnasium.com/serpentem/snapshooter.png)](https://gemnasium.com/serpentem/snapshooter)
 
@@ -54,7 +54,7 @@ Options:
   -s, --server           Start a server for previewing crawled content         
   -P, --port             Preview server port                                     [default: 8080]
   -f, --forward          Avoid crawling links up to the initial url folder     
-  -t, --timeout          Time limit to wait for a page to render                 [default: 15000]
+  -t, --timeout          Time limit (in seconds) to wait for a page to render    [default: 15]
   -m, --max-connections  Max connections limit, use with care.                   [default: 10]
   -O, --once             Avoid recursivity, crawling only the first given url  
   -S, --stdout           Prints crawled content to stdout (use with -O)        
@@ -66,7 +66,7 @@ Options:
 Examples:
   snapshooter -i <site.com> -o <local-folder>
   snapshooter -i <site.com> -o <local-folder> -p
-  snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e /\.exe$/m] [-t 20000]
+  snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e '/\.exe$/m'] [-t 20000]
 ````
 
 <a name="integration" />

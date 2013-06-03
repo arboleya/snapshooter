@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4 - 03/06/2013
+ * Automatically set -O to true when using -S to avoid errors
+ * Handling validation at startup to consider options -o or -S as mandatory 
+
 ## 0.2.3 - 03/06/2013
  * Passing regexes between single/double quotes is now mandatory
  * Changing --timeout to use seconds instead of milliseconds

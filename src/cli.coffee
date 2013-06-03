@@ -53,7 +53,7 @@ module.exports = class Cli
       .describe('O', 'Avoid recursivity, crawling only the first given url')
 
       .alias('S', 'stdout')
-      .describe('S', 'Prints crawled content to stdout (use with -O)')
+      .describe('S', 'Prints crawled content to stdout (will force -O=true)')
 
       .alias('V', 'verbose')
       .describe('V', 'Shows info logs about files skipped')

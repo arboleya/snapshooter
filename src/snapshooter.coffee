@@ -33,9 +33,11 @@ module.exports = class Snapshooter
 
   # initialize crawling party
   init:()->
-    # if output foler is not specified
-    unless @cli.argv.output 
-      return console.log '• ERROR '.bold.red + 'Output dir not informed!'
+    # if output folder is not specified (and -O option
+    unless @cli.argv.output or @cli.argv.stdout
+      console.log '• ERROR '.bold.red + 'Output dir not informed!'
+      console.log ' ➜  Alternatively, you can pass -S to write to stdout.'.cyan
+      return
 
     # otherwise if it is but it already exist on disk
     if fs.existsSync @cli.argv.output

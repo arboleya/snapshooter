@@ -240,6 +240,7 @@ module.exports = class Shoot
     not_image = not (/\.(jpg|jpeg|gif|png)$/m.test absolute)
     not_zip = not (/\.(zip|tar(\.gz)?)$/m.test absolute )
     not_pdf = not (/\.(pdf)$/m.test absolute )
+    not_mail_to = not (/^mailto:/m.test relative )
 
     if @cli.argv.forward
       not_backwards = (absolute.indexOf @root_folder) is 0
@@ -252,14 +253,15 @@ module.exports = class Shoot
       not_exclude = true
 
     flags = [
-      not_slash,
-      not_crawled,
-      not_anchor,
-      not_image,
-      not_zip,
-      not_pdf,
-      not_exclude,
+      not_slash
+      not_crawled
+      not_anchor
+      not_image
+      not_zip
+      not_pdf
+      not_exclude
       not_backwards
+      not_mail_to
     ]
 
     passed = true

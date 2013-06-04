@@ -155,7 +155,7 @@ module.exports = class Shoot
 
         # computes absolute link path
         relative = match[1]
-        absolute = @domain + relative
+        absolute = @domain + "/#{relative}".replace /^\/\//, '/'
 
         # checks if it should be crawled
         passed = @url_is_passing relative, absolute

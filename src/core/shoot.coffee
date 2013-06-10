@@ -128,7 +128,7 @@ module.exports = class Shoot
         @failed_files_num++
 
       # if user has set stdout option, print it and abort
-      # it'll force snapshooter to think that --onde was also informed
+      # it'll force snapshooter to think that --once was also informed
       # because there's no use to crawl an entire site to stout!
       if @cli.argv.stdout
         console.log source

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.6 - 10/06/2013
+ * Adding `--log` option to show page `console.log` calls in terminal while
+ crawling pages (useful for debug).
+
 ## 0.2.5 - 04/06/2013
  * Excluding `mailto:` links
  * Handling absence of first slash on hrefs

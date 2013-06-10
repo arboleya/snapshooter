@@ -28,6 +28,12 @@ module.exports = class Crawler
           msg += @url.yellow
           return @error msg, err2
 
+        # consider also if user has set stdout option, because there's no sense
+        # on showing log messages when crawling to stout
+        if @cli.argv.log and not @cli.argv.stdout
+          @page.set 'onConsoleMessage', (msg)=>
+            console.log msg
+
         # open the given url
         @page.open @url, ( status, err3 )=>
           

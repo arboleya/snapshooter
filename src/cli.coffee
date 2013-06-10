@@ -46,14 +46,17 @@ module.exports = class Cli
       .default('t', 15)
 
       .alias('m', 'max-connections')
-      .describe('m', 'Max connections limit, use with care.')
+      .describe('m', 'Max connections limit, use with care')
       .default('m', 10)
+
+      .alias('l', 'log')
+      .describe('l', 'Show \'console.log\' messages (try disabling it if phantom crashes)')
 
       .alias('O', 'once')
       .describe('O', 'Avoid recursivity, crawling only the first given url')
 
       .alias('S', 'stdout')
-      .describe('S', 'Prints crawled content to stdout (will force -O=true)')
+      .describe('S', 'Prints crawled content to stdout (auto-set -O=true -l=false)')
 
       .alias('V', 'verbose')
       .describe('V', 'Shows info logs about files skipped')

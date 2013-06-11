@@ -34,6 +34,11 @@ module.exports = class Crawler
           @page.set 'onConsoleMessage', (msg)=>
             console.log msg
 
+        # inject snapshooter variable on window, so crawled apps can make
+        # decisions based on that
+        @page.set 'onInitialized', =>
+          @page.evaluate -> window.snapshooter = true
+
         # open the given url
         @page.open @url, ( status, err3 )=>
           
@@ -82,7 +87,7 @@ module.exports = class Crawler
 
       # otherwise just return it
       else
-        @done data.source
+        @done (data.source.replace /\n/g, '')
 
   # general error reporting and premature callback dispatcher
   error:( msg, error )->

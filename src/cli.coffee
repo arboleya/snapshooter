@@ -61,6 +61,12 @@ module.exports = class Cli
       .alias('V', 'verbose')
       .describe('V', 'Shows info logs about files skipped')
 
+      .alias('D', 'delete')
+      .describe( 'D', 'Automatically delete destination folder before writing new files')
+      
+      .alias('X', 'overwrite')
+      .describe('X', 'Automatically overwrite destination folder with new files')
+
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')
 

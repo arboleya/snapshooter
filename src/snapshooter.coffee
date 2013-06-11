@@ -33,7 +33,7 @@ module.exports = class Snapshooter
 
   # initialize crawling party
   init:()->
-    # if output folder is not specified (and -O option
+    # if output folder is not specified (and -O option is also not informed)
     unless @cli.argv.output or @cli.argv.stdout
       console.log '• ERROR '.bold.red + 'Output dir not informed!'
       console.log ' ➜  Alternatively, you can pass -S to write to stdout.'.cyan
@@ -42,18 +42,44 @@ module.exports = class Snapshooter
     # otherwise if it is but it already exist on disk
     if fs.existsSync @cli.argv.output
 
-      # check if user wants to overwrite it
-      @prompt 'Output folder exists, overwite?', /.*/, 'y', (answer)=> 
+      # if --delete options was given
+      if @cli.argv.delete?
+        # delete folder and proceed
+        fsu.rm_rf @cli.argv.output
+        do @shoot
 
-        # if yes, move on
-        if answer.toLowerCase() is 'y'
-          fsu.rm_rf @cli.argv.output
-          do @shoot
+      # if --overwrite option was given
+      else if @cli.argv.overwrite?
 
-        # otherwise abort execution
-        else
-          console.log 'Aborting..'
-          do process.exit
+        # just proceed
+        do @shoot
+
+      # if none, ask user
+      else
+
+        msg = """Output folder exists:
+          [O]verwrite existent files
+          [D]elete folder before writing new files
+          [A]bort
+
+        Enter option
+        """
+
+        @prompt msg, /(o|d)/i, 'O', (answer)=> 
+
+          # completely delete folder before crawling
+          if answer.toLowerCase() is 'd'
+            fsu.rm_rf @cli.argv.output
+            do @shoot
+
+          # start to crawl overwriting files one by one
+          else if answer.toLowerCase() is 'o'
+            do @shoot
+
+          # otherwise abort execution
+          else
+            console.log 'Aborting..'
+            do process.exit
 
     # if output folder is informed and it does not exist on disk, go ahead
     else

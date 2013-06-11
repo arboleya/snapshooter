@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.7 - 10/06/2013
+ * Adding handy options `--delete` and `--overwrite`
+ * Injecting `snapshooter=true` variable on window of pages before crawling to
+ let apps make decisions based on this
+ * Removing line breaks from saved indexed pages when `--pretty` is not informed
+
 ## 0.2.6 - 10/06/2013
  * Adding `--log` option to show page `console.log` calls in terminal while
  crawling pages (useful for debug).

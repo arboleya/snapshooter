@@ -34,10 +34,12 @@ module.exports = class Crawler
           @page.set 'onConsoleMessage', (msg)=>
             console.log msg
 
-        # inject snapshooter variable on window, so crawled apps can make
-        # decisions based on that
-        @page.set 'onInitialized', =>
-          @page.evaluate -> window.snapshooter = true
+        # if hidden options is not provided
+        unless @cli.argv.hidden
+          # inject snapshooter variable on window, so crawled apps can make
+          # decisions based on that
+          @page.set 'onInitialized', =>
+            @page.evaluate -> window.snapshooter = true
 
         # open the given url
         @page.open @url, ( status, err3 )=>

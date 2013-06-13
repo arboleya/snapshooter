@@ -67,6 +67,9 @@ module.exports = class Cli
       .alias('X', 'overwrite')
       .describe('X', 'Automatically overwrite destination folder with new files')
 
+      .alias('H', 'hidden')
+      .describe('H', 'Does\'t inject the `window.snapshooter=true` on pages being crawled')
+
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')
 

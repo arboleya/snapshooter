@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.7 - 12/06/2013
+ * Adding `--hidden` option to avoid injection of `window.snapshooter` variable
+ on pages being crawled.
+
 ## 0.2.7 - 10/06/2013
  * Adding handy options `--delete` and `--overwrite`
  * Injecting `snapshooter=true` variable on window of pages before crawling to

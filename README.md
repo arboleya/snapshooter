@@ -2,7 +2,7 @@
 
 Simple crawler for Single Page Applications.
 
-> Version 0.2.7
+> Version 0.2.8
 
 [![Dependency Status](https://gemnasium.com/serpentem/snapshooter.png)](https://gemnasium.com/serpentem/snapshooter)
 
@@ -28,7 +28,7 @@ Do not hesitate to open a feature request or a bug report.
 <a name="requirements" />
 ## Requirements
 
-You'll need PhantomJS installed in order to use this library.
+You'll need PhantomJS installed (v 1.9 or greater) in order to use this package.
  * http://phantomjs.org
 
 
@@ -47,26 +47,24 @@ Usage:
   snapshooter [options] [params]
 
 Options:
-  -i, --input            Input url to crawl                                    
-  -o, --output           Output folder to save crawled files                   
-  -e, --exclude          Exclude files matching the given regex exclude pattern
-  -p, --pretty           Output crawled files in a pretty fashion way          
-  -s, --server           Start a server for previewing crawled content         
-  -P, --port             Preview server port                                     [default: 8080]
-  -f, --forward          Avoid crawling links up to the initial url folder     
-  -t, --timeout          Time limit (in seconds) to wait for a page to render    [default: 15]
-  -m, --max-connections  Max connections limit, use with care.                   [default: 10]
-  -O, --once             Avoid recursivity, crawling only the first given url  
-  -S, --stdout           Prints crawled content to stdout (use with -O)        
-  -V, --verbose          Shows info logs about files skipped                   
-  -v, --version          Shows snapshooter version                             
-  -h, --help             Shows this help screen                                
-
-
-Examples:
-  snapshooter -i <site.com> -o <local-folder>
-  snapshooter -i <site.com> -o <local-folder> -p
-  snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e '/\.exe$/m'] [-t 20000]
+  -i, --input            Input url to crawl                                                
+  -o, --output           Output folder to save crawled files                               
+  -e, --exclude          Regex pattern for excluding files (pass between quotes)           
+  -p, --pretty           Output crawled files in a pretty fashion way                      
+  -s, --server           Start a server for previewing crawled content                     
+  -P, --port             Preview server port                                                 [default: 8080]
+  -f, --forward          Avoid crawling links up to the initial url folder                 
+  -t, --timeout          Time limit (in seconds) to wait for a page to render                [default: 15]
+  -m, --max-connections  Max connections limit, use with care                                [default: 10]
+  -l, --log              Show 'console.log' messages (try disabling it if phantom crashes) 
+  -O, --once             Avoid recursivity, crawling only the first given url              
+  -S, --stdout           Prints crawled content to stdout (auto-set -O=true -l=false)      
+  -V, --verbose          Shows info logs about files skipped                               
+  -D, --delete           Automatically delete destination folder before writing new files  
+  -X, --overwrite        Automatically overwrite destination folder with new files         
+  -H, --hidden           Does't inject the `window.snapshooter=true` on pages being crawled
+  -v, --version          Shows snapshooter version                                         
+  -h, --help             Shows this help screen  
 ````
 
 <a name="integration" />

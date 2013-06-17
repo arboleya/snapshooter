@@ -42,29 +42,35 @@ npm install -g snapshooter
 <a name="help" />
 ## Help
 
-````bash
+````
 Usage:
   snapshooter [options] [params]
 
 Options:
-  -i, --input            Input url to crawl                                                
-  -o, --output           Output folder to save crawled files                               
-  -e, --exclude          Regex pattern for excluding files (pass between quotes)           
-  -p, --pretty           Output crawled files in a pretty fashion way                      
-  -s, --server           Start a server for previewing crawled content                     
-  -P, --port             Preview server port                                                 [default: 8080]
-  -f, --forward          Avoid crawling links up to the initial url folder                 
-  -t, --timeout          Time limit (in seconds) to wait for a page to render                [default: 15]
-  -m, --max-connections  Max connections limit, use with care                                [default: 10]
-  -l, --log              Show 'console.log' messages (try disabling it if phantom crashes) 
-  -O, --once             Avoid recursivity, crawling only the first given url              
-  -S, --stdout           Prints crawled content to stdout (auto-set -O=true -l=false)      
-  -V, --verbose          Shows info logs about files skipped                               
-  -D, --delete           Automatically delete destination folder before writing new files  
-  -X, --overwrite        Automatically overwrite destination folder with new files         
-  -H, --hidden           Does't inject the `window.snapshooter=true` on pages being crawled
-  -v, --version          Shows snapshooter version                                         
-  -h, --help             Shows this help screen  
+  -i, --input            Input url to index                                                 
+  -o, --output           Output folder to save indexed files                                
+  -e, --exclude          Regex pattern for excluding files (pass between quotes)            
+  -p, --pretty           Output indexed files in a pretty fashion way                       
+  -s, --server           Start a server for previewing indexed content                      
+  -P, --port             Preview server port                                                  [default: 8080]
+  -f, --forward          Avoid indexing links up to the initial url folder                  
+  -t, --timeout          Time limit (in seconds) to wait for a page to render                 [default: 15]
+  -m, --max-connections  Max connections limit, use with care                                 [default: 10]
+  -l, --log              Show 'console.log' messages (try disabling it if phantom crashes)  
+  -O, --once             Avoid recursivity, index only the given url and nothing else       
+  -S, --stdout           Prints indexed content to stdout (auto-set -O=true -l=false)       
+  -V, --verbose          Shows info logs about files skipped                                
+  -D, --delete           Automatically delete destination folder before writing new files   
+  -X, --overwrite        Automatically overwrite destination folder with new files          
+  -H, --hidden           Doesn't inject the `window.snapshooter=true` on pages being indexed
+  -v, --version          Shows snapshooter version                                          
+  -h, --help             Shows this help screen                                             
+
+
+Examples:
+  snapshooter -i <site.com> -o <local-folder>
+  snapshooter -i <site.com> -o <local-folder> -p
+  snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e '/\.exe$/m'] [-t 20000]
 ````
 
 <a name="integration" />

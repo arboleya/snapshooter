@@ -20,26 +20,26 @@ module.exports = class Cli
     @argv = (@opts = optimist.usage( @usage )
 
       .alias('i', 'input')
-      .describe('i', 'Input url to crawl')
+      .describe('i', 'Input url to index')
 
       .alias('o', 'output')
-      .describe('o', 'Output folder to save crawled files')
+      .describe('o', 'Output folder to save indexed files')
 
       .alias('e', 'exclude')
       .describe('e', 'Regex pattern for excluding files (pass between quotes)')
 
       .alias('p', 'pretty')
-      .describe('p', 'Output crawled files in a pretty fashion way')
+      .describe('p', 'Output indexed files in a pretty fashion way')
 
       .alias('s', 'server')
-      .describe('s', 'Start a server for previewing crawled content')
+      .describe('s', 'Start a server for previewing indexed content')
 
       .alias('P', 'port')
       .describe('P', 'Preview server port' )
       .default('P', 8080 )
 
       .alias('f', 'forward')
-      .describe('f', 'Avoid crawling links up to the initial url folder')
+      .describe('f', 'Avoid indexing links up to the initial url folder')
 
       .alias('t', 'timeout')
       .describe('t', 'Time limit (in seconds) to wait for a page to render')
@@ -53,10 +53,10 @@ module.exports = class Cli
       .describe('l', 'Show \'console.log\' messages (try disabling it if phantom crashes)')
 
       .alias('O', 'once')
-      .describe('O', 'Avoid recursivity, crawling only the first given url')
+      .describe('O', 'Avoid recursivity, index only the given url and nothing else')
 
       .alias('S', 'stdout')
-      .describe('S', 'Prints crawled content to stdout (auto-set -O=true -l=false)')
+      .describe('S', 'Prints indexed content to stdout (auto-set -O=true -l=false)')
 
       .alias('V', 'verbose')
       .describe('V', 'Shows info logs about files skipped')
@@ -68,7 +68,7 @@ module.exports = class Cli
       .describe('X', 'Automatically overwrite destination folder with new files')
 
       .alias('H', 'hidden')
-      .describe('H', 'Does\'t inject the `window.snapshooter=true` on pages being crawled')
+      .describe('H', 'Doesn\'t inject the `window.snapshooter=true` on pages being indexed')
 
       .alias('v', 'version')
       .describe('v', 'Shows snapshooter version')

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.7 - 12/06/2013
+## 0.2.8 - 12/06/2013
  * Adding `--hidden` option to avoid injection of `window.snapshooter` variable
  on pages being crawled.
 

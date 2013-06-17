@@ -211,6 +211,8 @@ module.exports = class Shoot
 
 
   finish:->
+    do Crawler.kill
+
     unless @cli.argv.stdout
       # success status msg
       ms = (do (new Date).getTime - @start_time) + ' ms'

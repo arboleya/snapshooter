@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.9 - 12/06/2013
+ * Added huge performance improvement to ease the pain out of indexing large
+ apps.
+
 ## 0.2.8 - 12/06/2013
  * Adding `--hidden` option to avoid injection of `window.snapshooter` variable
  on pages being crawled.

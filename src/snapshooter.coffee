@@ -65,7 +65,8 @@ module.exports = class Snapshooter
         Enter option
         """
 
-        @prompt msg, /(o|d)/i, 'O', (answer)=> 
+        @prompt msg, /(o|d|a)/i, 'A', (answer)=> 
+          answer = do answer.toLowerCase
 
           # completely delete folder before crawling
           if answer.toLowerCase() is 'd'
@@ -78,7 +79,6 @@ module.exports = class Snapshooter
 
           # otherwise abort execution
           else
-            console.log 'Aborting..'
             do process.exit
 
     # if output folder is informed and it does not exist on disk, go ahead

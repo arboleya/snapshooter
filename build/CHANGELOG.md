@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.10 - 18/06/2013
+ * Fixing validation rule when overwriting existent directory, making [A]bort
+ option default in order to avoid disasters.
+
 ## 0.2.9 - 12/06/2013
  * Added huge performance improvement to ease the pain out of indexing large
  apps.

@@ -222,7 +222,7 @@ module.exports = class Shoot
       console.log '\t Failed: ' + @failed_files_num
 
     # aborts if webserver isn't needed
-    return unless @cli.argv.server
+    return do process.exit unless @cli.argv.server
 
     # simple static server with 'connect'
     @conn = connect()

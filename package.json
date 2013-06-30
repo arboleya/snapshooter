@@ -1,6 +1,6 @@
 {
   "name": "snapshooter",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "author": "Henrique Matias <hems.inlet+npm@gmail.com>",
   "contributors": ["Anderson Arboleya <anderson@arboleya.me>"],
   "description": "Simple crawler for Single Page Applications",
@@ -25,10 +25,10 @@
 
   "dependencies"   : {
     "colors": "0.6.x",
-    "connect": "2.7.x",
+    "connect": "2.8.x",
     "fs-util": "0.3.x",
     "phantom": "0.5.x",
-    "optimist": "0.5.x",
+    "optimist": "0.6.x",
     "pretty-data": "0.40.x",
     "source-map-support": "0.1.x"
   },

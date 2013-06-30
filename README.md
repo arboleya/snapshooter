@@ -2,7 +2,7 @@
 
 Simple crawler for Single Page Applications.
 
-> Version 0.2.10
+> Version 0.2.11
 
 [![Dependency Status](https://gemnasium.com/serpentem/snapshooter.png)](https://gemnasium.com/serpentem/snapshooter)
 

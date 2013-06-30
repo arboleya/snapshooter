@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.11 - 06/30/2013
+ * Properly exiting process when no `-s` option is given
+
 ## 0.2.10 - 18/06/2013
  * Fixing validation rule when overwriting existent directory, making [A]bort
  option default in order to avoid disasters.

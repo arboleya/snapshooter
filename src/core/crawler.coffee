@@ -108,5 +108,6 @@ module.exports = class Crawler
     console.error msg
     if error?
       console.error error
-    do @ph.exit
+
+    if @ph? then @ph.exit
     @done null

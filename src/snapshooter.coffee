@@ -7,12 +7,12 @@ exec = (require 'child_process').exec
 fsu = require 'fs-util'
 
 Shoot = require './core/shoot'
+Live = require './core/live'
 Cli = require './cli'
 
 module.exports = class Snapshooter
 
   constructor:->
-
     # evaluates version and intialize @cli class
     @version = (require './../package.json' ).version
     @cli = new Cli @version
@@ -33,6 +33,16 @@ module.exports = class Snapshooter
 
   # initialize crawling party
   init:()->
+
+    console.warn 'live is :', @cli.argv.live
+
+    console.warn 'port is :', @cli.argv.port
+
+    if @cli.argv.live
+      live = new Live( @this, @cli )
+
+      return
+
     # if output folder is not specified (and -O option is also not informed)
     unless @cli.argv.output or @cli.argv.stdout
       console.log '• ERROR '.bold.red + 'Output dir not informed!'

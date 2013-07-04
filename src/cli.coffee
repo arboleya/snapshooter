@@ -52,6 +52,9 @@ module.exports = class Cli
       .alias('l', 'log')
       .describe('l', 'Show \'console.log\' messages (try disabling it if phantom crashes)')
 
+      .alias('L', 'live')
+      .describe('L', 'creates a "live" tunnel, crawling will happen on demand ')
+
       .alias('O', 'once')
       .describe('O', 'Avoid recursivity, index only the given url and nothing else')
 

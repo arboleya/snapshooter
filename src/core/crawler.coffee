@@ -44,7 +44,7 @@ module.exports = class Crawler
 
       # do not activate log messages if user has set stdout option, because
       # there's no sense on showing log messages when crawling to stout
-      if @cli.argv.log and not @cli.argv.stdout
+      if @cli.argv.log and not @cli.argv.stdout and not @cli.argv.live
         @page.set 'onConsoleMessage', (msg)=>
           console.log msg
 
@@ -52,7 +52,7 @@ module.exports = class Crawler
       unless @cli.argv.hidden
 
         # inject snapshooter variable on window, so crawled apps can make
-        # decisions based on that
+      # decisions based on that
         @page.set 'onInitialized', =>
           @page.evaluate -> window.snapshooter = true
 

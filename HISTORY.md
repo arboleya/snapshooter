@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.13 - 07/04/2013
+ * Properly exiting phantom on page rendering timeout
+
 ## 0.2.12 - 06/30/2013
  * Upgrading outdated dependencies
 

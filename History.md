@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.14 - 07/24/2013
+ * Fixing `phantom.create` signature according `phantom-js-node` API update
+
 ## 0.2.13 - 07/04/2013
  * Properly exiting phantom on page rendering timeout
 

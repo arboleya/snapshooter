@@ -1,3 +1,7 @@
+0.3.1 / 2013-08-05
+===================
+ * Little improve on docs
+
 0.3.0 / 2013-08-05
 ===================
  * Adding live mode (option -L)

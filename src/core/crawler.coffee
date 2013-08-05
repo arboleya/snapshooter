@@ -12,12 +12,15 @@ module.exports = class Crawler
   page: null
   start_time: null
 
-  port = 12345
-  constructor:( @cli, @url, @done )->
+  constructor:( @cli, @url, @done, just_create_phantom )->
+    if just_create_phantom
+      return @create_phantom -> true
+
     @start_time = do (new Date).getTime
     @create_phantom => @create_page => do @open_url
 
-  @kill:-> do ph.exit
+  @kill:->
+    do ph.exit if ph?
 
 
   create_phantom:( done )->
@@ -108,5 +111,5 @@ module.exports = class Crawler
     if error?
       console.error error
 
-    do ph.exit if @ph?
+    do Crawler.kill
     @done null

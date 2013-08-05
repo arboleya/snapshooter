@@ -55,6 +55,7 @@ Options:
   -t, --timeout          Time limit (in seconds) to wait for a page to render                 [default: 15]
   -m, --max-connections  Max connections limit, use with care                                 [default: 10]
   -l, --log              Show 'console.log' messages (try disabling it if phantom crashes)  
+  -L, --live             Creates a "live" tunnel, crawling will happen on demand            
   -O, --once             Avoid recursivity, index only the given url and nothing else       
   -S, --stdout           Prints indexed content to stdout (auto-set -O=true -l=false)       
   -V, --verbose          Shows info logs about files skipped                                

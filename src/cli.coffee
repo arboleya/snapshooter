@@ -14,7 +14,6 @@ module.exports = class Cli
       snapshooter -i <site.com> -o <local-folder>
       snapshooter -i <site.com> -o <local-folder> -p
       snapshooter -i <site.com> -o <local-folder> -ps [-P 3000] [-e '/\\.exe$/m'] [-t 20000]
-
     """
 
     @argv = (@opts = optimist.usage( @usage )
@@ -53,7 +52,7 @@ module.exports = class Cli
       .describe('l', 'Show \'console.log\' messages (try disabling it if phantom crashes)')
 
       .alias('L', 'live')
-      .describe('L', 'creates a "live" tunnel, crawling will happen on demand ')
+      .describe('L', 'Creates a live tunnel for server side on-demand use')
 
       .alias('O', 'once')
       .describe('O', 'Avoid recursivity, index only the given url and nothing else')

@@ -4,13 +4,13 @@ CS=node_modules/coffee-script/bin/coffee
 VERSION=`$(CS) build/bumper.coffee --version`
 
 bump.minor:
-	$(CS) build/bumper.coffee --minor
+	@$(CS) build/bumper.coffee --minor
 
 bump.major:
-	$(CS) build/bumper.coffee --major
+	@$(CS) build/bumper.coffee --major
 
 bump.patch:
-	$(CS) build/bumper.coffee --patch
+	@$(CS) build/bumper.coffee --patch
 
 watch:
 	$(CS) -wmco lib src

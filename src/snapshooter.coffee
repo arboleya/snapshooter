@@ -34,14 +34,9 @@ module.exports = class Snapshooter
   # initialize crawling party
   init:()->
 
-    console.warn 'live is :', @cli.argv.live
-
-    console.warn 'port is :', @cli.argv.port
-
     if @cli.argv.live
-      live = new Live( @this, @cli )
-
-      return
+      console.info 'Server listening on port:', @cli.argv.port
+      return new Live @this, @cli
 
     # if output folder is not specified (and -O option is also not informed)
     unless @cli.argv.output or @cli.argv.stdout

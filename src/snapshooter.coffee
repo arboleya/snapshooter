@@ -35,7 +35,6 @@ module.exports = class Snapshooter
   init:()->
 
     if @cli.argv.live
-      console.info 'Server listening on port:', @cli.argv.port
       return new Live @this, @cli
 
     # if output folder is not specified (and -O option is also not informed)

@@ -1,4 +1,4 @@
-http = require 'http'
+http = require('http');
 
 Crawler = require './crawler'
 
@@ -17,17 +17,33 @@ module.exports = class Live
     server = http.createServer @request
     server.listen @cli.argv.port
 
+    console.info 'Server listening on port:', @cli.argv.port
+
   # handles server requests
   request:(req, res)=>
-    console.time 'crawler'
+    start = do time
+
+    now = "#{(new Date).toString()}"
+    url = "[#{req.url}]"
 
     res.writeHead 200, {'Content-Type': 'text/html'}
 
     # ignore any request containing "."
     # this way when the browser try to reach files
     # like app.css or app.js the crawler doesn't try to reach it
-    if /\./.test( req.url ) then return do res.end
+    if /\./.test( req.url )
+      status = '[ignored]'
+      console.log now, status, url
+      return do res.end
 
     new Crawler @cli, @cli.argv.input + req.url, ( source )=> 
       res.end source
-      console.timeEnd 'crawler'
+      status = '[success]'
+      duration = "★  #{time_span start}"
+      console.log now, status, url, duration
+
+  time = ->
+    do (new Date).getTime
+
+  time_span = (start)->
+    return (do time - start) + 'ms'

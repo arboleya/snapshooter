@@ -31,8 +31,7 @@ module.exports = class Crawler
         return @error msg, err
       ph = _ph
       do done
-    , 'phantomjs'
-    , port++
+    , binary: 'phantomjs', port: port++
 
   create_page:( done )->
     ph.createPage ( @page, err )=>
@@ -109,5 +108,5 @@ module.exports = class Crawler
     if error?
       console.error error
 
-    if @ph? then @ph.exit
+    do ph.exit if @ph?
     @done null

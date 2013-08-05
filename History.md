@@ -1,3 +1,7 @@
+0.3.0 / 2013-08-05
+===================
+ * Adding live mode (option -L)
+
 0.2.15 / 2013-07-30
 ===================
  * Upgrading dependencies

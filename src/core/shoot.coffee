@@ -77,14 +77,6 @@ module.exports = class Shoot
         console.log msg.red
         console.log 'Did you inform your pattern between quotes?'.cyan
         do process.exit
-      
-
-
-    # checks if input has http protocol defined and defines it
-    unless ~(@cli.argv.input.indexOf 'http')
-
-      # computes first url to be crawled
-      @cli.argv.input = 'http://' + @cli.argv.input
 
     # removes any '/index.xyz' filename from the end
     first_url = @cli.argv.input.replace /\/index\.\w+$/m, ''

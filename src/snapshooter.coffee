@@ -34,6 +34,12 @@ module.exports = class Snapshooter
   # initialize crawling party
   init:()->
 
+     # checks if input has http protocol defined and defines it
+    unless /^http/m.test @cli.argv.input
+
+      # computes first url to be crawled
+      @cli.argv.input = 'http://' + @cli.argv.input
+
     if @cli.argv.live
       return new Live @this, @cli
 

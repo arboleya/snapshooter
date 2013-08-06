@@ -81,13 +81,13 @@ module.exports = class Shoot
 
 
     # checks if input has http protocol defined and defines it
-    unless ~@cli.argv.input.indexOf 'http'
+    unless ~(@cli.argv.input.indexOf 'http')
 
       # computes first url to be crawled
-      first_url = @cli.argv.input = 'http://' + @cli.argv.input
+      @cli.argv.input = 'http://' + @cli.argv.input
 
     # removes any '/index.xyz' filename from the end
-    first_url = first_url.replace /\/index\.\w+$/m, ''
+    first_url = @cli.argv.input.replace /\/index\.\w+$/m, ''
 
     # removing trailing slash
     first_url = first_url.replace /\/+$/m, ''
@@ -132,7 +132,7 @@ module.exports = class Shoot
       # because there's no use to crawl an entire site to stout!
       if @cli.argv.stdout
         console.log source
-        return
+        return do @finish
       
       @save_page url, source
       
@@ -213,6 +213,9 @@ module.exports = class Shoot
   finish:->
     do Crawler.kill
 
+    if @cli.argv.stdout
+      return process.exit 0
+
     unless @cli.argv.stdout
       # success status msg
       ms = (do (new Date).getTime - @start_time) + ' ms'
@@ -222,7 +225,8 @@ module.exports = class Shoot
       console.log '\t Failed: ' + @failed_files_num
 
     # aborts if webserver isn't needed
-    return do process.exit unless @cli.argv.server
+    unless @cli.argv.server
+      return process.exit 0
 
     # simple static server with 'connect'
     @conn = connect()

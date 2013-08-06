@@ -1,3 +1,7 @@
+0.3.2 / 2013-08-06
+===================
+ * Fixing protocol's handler (closes #9) 
+
 0.3.1 / 2013-08-05
 ===================
  * Little improve on docs

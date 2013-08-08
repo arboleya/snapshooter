@@ -136,7 +136,7 @@ module.exports = class Shoot
 
   # parses all links in the given source, and crawl them
   after_crawl:( source )->
-    reg = /<a\s+href\s*=\s*["']+(?!http)([^"']+)/g
+    reg = /<a[^\>]*href\s*=\s*["']+(\/[^"']+)/g
     links = []
 
     # if source is not null

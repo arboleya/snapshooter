@@ -1,3 +1,8 @@
+0.3.3 / 2013-08-08
+===================
+ * Fixing links parser to collect only hrefs that starts with a slash (/...),
+ and also ignoring attributes order
+
 0.3.2 / 2013-08-06
 ===================
  * Fixing protocol's handler (closes #9) 

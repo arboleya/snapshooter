@@ -1,3 +1,7 @@
+0.3.5 / 2013-11-27
+===================
+ * Fixing package.json
+
 0.3.4 / 2013-11-27
 ===================
  * Added support for external "before_save:($)" hook through parameter -k

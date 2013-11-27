@@ -193,6 +193,7 @@ module.exports = class Shoot
 
     if @cli.argv.hook
       $ = require( 'jquery' ).create()
+      $ = $ source
 
       hook = require( process.cwd() + '/' + @cli.argv.hook )
 

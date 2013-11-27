@@ -40,6 +40,9 @@ module.exports = class Cli
       .alias('f', 'forward')
       .describe('f', 'Avoid indexing links up to the initial url folder')
 
+      .alias('k', 'hook')
+      .describe('k', 'specify a file with hookies, so far only pre_save is supported')
+
       .alias('t', 'timeout')
       .describe('t', 'Time limit (in seconds) to wait for a page to render')
       .default('t', 15)

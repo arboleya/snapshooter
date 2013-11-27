@@ -1,6 +1,10 @@
 fs   = require 'fs'
 path = require 'path'
 fsu  = require 'fs-util'
+
+# in order to require .coffee files
+require 'coffee-script'
+
 connect  = require 'connect'
 
 Crawler = require './crawler'
@@ -186,6 +190,14 @@ module.exports = class Shoot
   # translates the url into a local address on the file system and saves
   # the page source
   save_page:( url, source )->
+
+    if @cli.argv.hook
+      $ = require( 'jquery' ).create()
+
+      hook = require( process.cwd() + '/' + @cli.argv.hook )
+
+      source = hook.before_save $
+
     # computes relative url
     relative_url = (url.replace @domain, '') or '/'
 

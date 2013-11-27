@@ -1,3 +1,9 @@
+0.3.4 / 2013-11-27
+===================
+ * Added support for external "before_save:($)" hook through parameter -k
+ * Added jquery-node as dependency
+ * Updated versions @ package.json
+
 0.3.3 / 2013-08-08
 ===================
  * Fixing links parser to collect only hrefs that starts with a slash (/...),

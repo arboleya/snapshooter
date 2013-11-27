@@ -25,7 +25,7 @@
 
   "dependencies"   : {
     "colors": "0.6.x",
-    "connect": "2.8.x",
+    "connect": "2.11.x",
     "fs-util": "0.3.x",
     "phantom": "0.5.x",
     "optimist": "0.6.x",

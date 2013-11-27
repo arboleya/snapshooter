@@ -21,6 +21,7 @@ Do not hesitate to open a feature request or a bug report.
   - [Installing](#installing)
   - [Help](#help)
     - [Integration](#integration)
+    - [Filtering the DOM before saving to file](#filtering)
   - [Contributing](#contributing)
 
 <a name="requirements" />
@@ -93,6 +94,42 @@ window.crawler.is_rendered = true
 Snapshooter will keep waiting for the page until this variable gets `true` and
 then the rendered DOM will be saved as a plain html file.
 
+<a name="filtering" />
+### Filtering the DOM before saving to file
+
+We got ourselves many times having to "clean the DOM" before saving to file or
+just wanting to save the content without header and footer.
+
+In order to do that we created the option to write a coffee file and filter the
+source before it gets written to the HTML file.
+
+In order to achieve filtering you must create a coffee file with a before_save
+method and specify that file with the "-k" option on the command line.
+
+The method will be called and will receive a jQuery object which you can use
+to manipulate the DOM, you should return the HTML bit you want to save.
+
+````coffeescript
+# removing script tags from the DOM
+
+exports.before_save = ( $ ) ->
+  
+  $.find( 'script' ).remove()
+
+  return $.html()
+
+# returning just the content div
+
+exports.before_save = ( $ ) ->
+  
+  return $.find( '#content' ).html()
+````
+
+then from the command line
+
+````javascript
+snapshooter -i <site.com> -o <local-folder> my_hook_file.coffee
+````
 
 <a name="contributing"/>
 ## Contributing

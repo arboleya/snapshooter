@@ -1,6 +1,6 @@
 {
   "name": "snapshooter",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Henrique Matias <hems.inlet+npm@gmail.com>",
   "contributors": ["Anderson Arboleya <anderson@arboleya.me>"],
   "description": "Simple crawler for Single Page Applications",

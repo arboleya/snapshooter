@@ -96,6 +96,9 @@ module.exports = class Crawler
           return @error msg
         else
           return setTimeout @keep_on_checking, 100
+          
+      # closing page to improve performace
+      page.close()
 
       # if users opted for pretty data, format it and return
       if @cli.argv.pretty
